@@ -5,7 +5,6 @@
 
 setwd("~/Desktop/Cleaned PREDICT data")
 
-install.packages("ape")
 library(ape)
 
 behavior001_500	<- read.csv('behavior_001_500.csv', stringsAsFactors = FALSE)
@@ -27,13 +26,15 @@ SS3001_3500	<- read.csv('SS_3001_3500.csv', stringsAsFactors = FALSE)
 lumper		<- read.csv('Lumper_Taxonomy.csv', stringsAsFactors = FALSE)
 IUCN_tax		<- read.csv('IUCN_Taxonomy.csv', stringsAsFactors = FALSE)
 TenKTrees		<- read.csv('10KTrees_Taxonomy.csv', stringsAsFactors = FALSE)
+Tree		<- read.nexus('consensusTree_10kTrees_Primates_Version3.nex')
+
 
 iucn			<- read.csv('assessments.csv', stringsAsFactors = FALSE)
-iucn$catNum		<- ifelse(iucn$redlistCategory == 'Least_Concern', 0,
-                       ifelse(iucn$redlistCategory == 'Near_Threatened', 1,
+iucn$catNum		<- ifelse(iucn$redlistCategory == 'Least Concern', 0,
+                       ifelse(iucn$redlistCategory == 'Near Threatened', 1,
                               ifelse(iucn$redlistCategory == 'Vulnerable', 2,
                                      ifelse(iucn$redlistCategory == 'Endangered', 3,
-                                            ifelse(iucn$redlistCategory == 'Critically_Endangered', 4,
+                                            ifelse(iucn$redlistCategory == 'Critically Endangered', 4,
                                                    ifelse(iucn$redlistCategory == 'Extinct', 5, NA))))))
 
 
@@ -64,18 +65,28 @@ lengthUnique <- function(dat){
   return(length(unique(dat)))
 }
 
+##################################################
+### How are papers distributed across species? ###
+##################################################
+
 NpapersPerSpecies <- aggregate(behaviorAll$Article.ID, by=list(behaviorAll$Lumper_Taxonomy), FUN=lengthUnique)
 
-NpapersPerSpecies 
-barplot(NpapersPerSpecies$x)
+NpapersPerSpecies	<- NpapersPerSpecies[NpapersPerSpecies$Group.1 != "",]
 
+NpapersPerSpecies	<- NpapersPerSpecies[order(NpapersPerSpecies$x, decreasing=TRUE), ] 
+head(NpapersPerSpecies)
+par(mar=c(10,4.1,2,2.1))
+barplot(NpapersPerSpecies[1:25,]$x, names.arg=NpapersPerSpecies[1:25,]$Group.1, las=2, ylab="Number of Papers", col="midnight blue")
 
-socialOrg			<- behaviorAll[behaviorAll$Social.organization != '',] #3190
+#############################################################################
+### How much variation is there within a species for social organization? ###
+#############################################################################
 
-groupSize			<- behaviorAll[behaviorAll$Max...of.individuals != '' & is.na(behaviorAll$Max...of.individuals) == FALSE,] #4378
+socialOrg			<- behaviorAll[behaviorAll$Social.organization != '',] #4843
 
-socialOrgSummary			<- aggregate(socialOrg$Social.organization, by = list(socialOrg$Social.organization, socialOrg$IUCN_name), FUN = length)
+socialOrgSummary			<- aggregate(socialOrg$Social.organization, by = list(socialOrg$Social.organization, socialOrg$Lumper_Taxonomy), FUN = length)
 colnames(socialOrgSummary)	<- c('socialOrganization', 'species', 'numGroups')
+
 socialOrgEntropy			<- aggregate(socialOrgSummary$numGroups, by = list(socialOrgSummary$species), FUN = shannon.entropy)
 colnames(socialOrgEntropy) 	<- c('species', 'entropy')
 socialOrgNTypes			<- aggregate(socialOrgSummary$numGroups, by = list(socialOrgSummary$species), FUN = length)
@@ -85,9 +96,65 @@ colnames(socialOrgNGroups) 	<- c('species', 'nGroups')
 socialOrgEntropy			<- cbind(socialOrgEntropy, socialOrgNTypes[,2], socialOrgNGroups[,2])
 colnames(socialOrgEntropy) 	<- c('species', 'entropy', 'nTypes', 'nGroups')
 
-groupSizeSummary			<- aggregate(groupSize$Max...of.individuals, by = list(groupSize$IUCN_name), FUN = mean)
-
 socialOrgEntropyIUCN	<- merge(socialOrgEntropy, iucn, by.x = 'species', by.y = 'scientificName')
 
-plot(jitter(socialOrgEntropyIUCN[socialOrgEntropyIUCN$nGroups >= 2,]$nTypes), jitter(socialOrgEntropyIUCN[socialOrgEntropyIUCN$nGroups >= 2,]$catNum), pch = 16)
+plot(jitter(socialOrgEntropyIUCN[socialOrgEntropyIUCN$nGroups >= 2,]$nTypes),(socialOrgEntropyIUCN[socialOrgEntropyIUCN$nGroups >= 2,]$catNum), pch = 16, xlab="Number of Social Organization Types", ylab="IUCN status")
 model1	<- lm(socialOrgEntropyIUCN[socialOrgEntropyIUCN$nGroups >= 2,]$catNum ~ socialOrgEntropyIUCN[socialOrgEntropyIUCN$nGroups >= 2,]$nTypes)
+summary(model1)
+
+plot((socialOrgEntropyIUCN[socialOrgEntropyIUCN$nGroups >= 2,]$entropy),(socialOrgEntropyIUCN[socialOrgEntropyIUCN$nGroups >= 2,]$catNum), pch = 16, xlab="Entropy", ylab="IUCN status")
+model2	<- lm(socialOrgEntropyIUCN[socialOrgEntropyIUCN$nGroups >= 2,]$catNum ~ socialOrgEntropyIUCN[socialOrgEntropyIUCN$nGroups >= 2,]$entropy)
+summary(model2)
+
+install.packages("MASS") 
+library("MASS")
+socialOrgEntropyIUCN$combinedcat	<- ifelse(socialOrgEntropyIUCN$catNum==0,0,
+										ifelse(socialOrgEntropyIUCN$catNum==1,0,
+										ifelse(socialOrgEntropyIUCN$catNum==2,1,2)))
+table(socialOrgEntropyIUCN$catNum,socialOrgEntropyIUCN$combinedcat)
+
+model3	<- polr(factor(combinedcat) ~ entropy, data=socialOrgEntropyIUCN)
+summary(model3)
+
+model4	<- polr(factor(combinedcat) ~ nTypes, data=socialOrgEntropyIUCN)
+summary(model4)
+
+
+####################################################################
+### How much variation is there within a species for group size? ###
+####################################################################
+
+behaviorAll$Max...of.individuals	<-as.numeric(behaviorAll$Max...of.individuals)
+summary(behaviorAll$Max...of.individuals)
+
+NotLargestLevel	<- behaviorAll[behaviorAll$Type.of.data %in% c("Fission-fusion: Party/subgroup", "Multi-level: Smallest level", "Not a complicated species") & behaviorAll$Max...of.individuals<2000,]
+
+groupSize			<- NotLargestLevel[NotLargestLevel$Max...of.individuals != '' & is.na(NotLargestLevel$Max...of.individuals) == FALSE,] #6156
+
+cv	<- function(dat){
+				return(sd(dat,na.rm=TRUE)/mean(dat, na.rm=TRUE))
+}
+
+groupSizeSummary			<- aggregate(groupSize$Max...of.individuals, by = list(groupSize$IUCN_Name), FUN = cv)
+
+colnames(groupSizeSummary)	<-c("species", "cvGroupSize")
+groupSizeIUCN	<- merge(groupSizeSummary, iucn, by.x = 'species', by.y = 'scientificName')
+groupSizeIUCN
+
+plot(as.numeric(groupSizeIUCN$cvGroupSize), jitter(groupSizeIUCN$catNum), pch=16, xlab="Coefficient of Variation in Group Size", ylab="IUCN status")
+
+groupSizeSummary[groupSizeSummary$cvGroupSize>1, ]
+
+
+#############################
+### Phylogenetic analyses ###
+#############################
+
+class(Tree)
+
+groupSizeSummary	<- merge(groupSizeSummary, TenKTrees, by.x="species",by.y="Mendeley_tag")
+
+dim(groupSizeSummary) #245
+length(unique(groupSizeSummary$X10K_Trees_Name)) $190
+
+groupSizeSummary
