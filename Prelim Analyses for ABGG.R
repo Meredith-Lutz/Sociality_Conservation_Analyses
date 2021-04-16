@@ -1,7 +1,8 @@
-###########################################################################
-###########################################################################
-##### Preliminary Analyses for ABGG #######################################
-###########################################################################
+##########################################
+##########################################
+##### Preliminary Analyses for ABGG ######
+##########################################
+##########################################
 
 setwd("~/Desktop/Cleaned PREDICT data")
 
@@ -158,3 +159,33 @@ dim(groupSizeSummary) #245
 length(unique(groupSizeSummary$X10K_Trees_Name)) $190
 
 groupSizeSummary
+
+
+####################################
+### Network Graph of Social Org. ###
+####################################
+
+typeSocialOrg	<- unique(behaviorAll$Social.organization)[c(1:3,5:8)]
+SocialOrgMat	<- matrix(,length(typeSocialOrg),length(typeSocialOrg),
+					dimnames=list(typeSocialOrg,typeSocialOrg))
+listSpecies 	<- unique(socialOrgSummary$species)[c(2:146)]
+
+
+for(i in 1:length(typeSocialOrg)){
+	for(j in 1:length(typeSocialOrg)){
+		nSpeciesOverlap	<- 0
+		for(k in listSpecies){
+			subset	<- socialOrgSummary[socialOrgSummary$species==k,]
+			if(typeSocialOrg[i] %in% subset$socialOrganization & typeSocialOrg[j] %in% 									subset$socialOrganization){
+				nSpeciesOverlap <- nSpeciesOverlap+1
+			}
+		}	
+		SocialOrgMat[i,j]	<- nSpeciesOverlap			
+	}	
+}
+
+library(igraph)
+
+socialOrgNet <-	graph_from_adjacency_matrix(SocialOrgMat, weighted=TRUE, diag=FALSE, mode="undirected")
+plot(socialOrgNet, weights=E(socialOrgNet)$weights)
+?graph_from_adjacency_matrix
