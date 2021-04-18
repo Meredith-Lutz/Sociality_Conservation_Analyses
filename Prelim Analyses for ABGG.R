@@ -140,11 +140,23 @@ groupSizeSummary			<- aggregate(groupSize$Max...of.individuals, by = list(groupS
 
 colnames(groupSizeSummary)	<-c("species", "cvGroupSize")
 groupSizeIUCN	<- merge(groupSizeSummary, iucn, by.x = 'species', by.y = 'scientificName')
-groupSizeIUCN
 
 plot(as.numeric(groupSizeIUCN$cvGroupSize), jitter(groupSizeIUCN$catNum), pch=16, xlab="Coefficient of Variation in Group Size", ylab="IUCN status")
 
-groupSizeSummary[groupSizeSummary$cvGroupSize>1, ]
+
+###meangroupSize
+
+meangroupSizeSummary			<- aggregate(groupSize$Max...of.individuals, by = list(groupSize$IUCN_Name, 										groupSize$Taxon_group), FUN = mean)
+colnames(meangroupSizeSummary)	<-c("species", "Taxon","meanGroupSize")
+meangroupSizeIUCN	<- merge(meangroupSizeSummary, iucn, by.x = 'species', by.y = 'scientificName')
+par(mar=c(10,4,5,2))
+plot(as.numeric(meangroupSizeIUCN$meanGroupSize), jitter(meangroupSizeIUCN$catNum), pch=16, xlab="Mean Group Size", ylab="IUCN Status", col=factor(meangroupSizeIUCN$Taxon))
+colnames(meangroupSizeIUCN)
+head(meangroupSizeSummary)
+meangroupSizeSummary
+
+groupSize[groupSize$IUCN_Name=="Trachypithecus_francoisi"&is.na(groupSize$IUCN_Name)==FALSE, c("IUCN_Name", "sciName", "Article.ID","Max...of.individuals")]
+
 
 
 #############################
