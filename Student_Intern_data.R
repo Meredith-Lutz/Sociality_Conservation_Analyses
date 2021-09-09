@@ -9,7 +9,7 @@ axis(1,at=c(1.5,2.5,3.5, 4.5),labels=c("First year", "Sophomore", "Junior", "Sen
 dev.off()
 
 data	<- data[data$Major != "",]
-png("MajorofStudents.png",width=12, height=12, units="in", res=300)
+png("MajorofStudents.png",width=8, height=8, units="in", res=300)
 par(mar=c(10,5,2,1),cex=1.5)
 barplot(as.matrix(sort(table(data$Major),decreasing=TRUE)),beside=TRUE, col="midnight blue",ylim=c(0,50), ylab="Number of students")
 mtext("Major", side=1,line=8,cex=1.5)
