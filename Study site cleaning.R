@@ -1,5 +1,5 @@
-setwd("/Users/josephinehubbard/Desktop/Desktop/Cleaned PREDICT data")
-
+setwd("G:/My Drive/Graduate School/Research/Projects/SocialityConservationAnalyses/Data")
+library("stringr")
 
 SS_001_500old 		<- read.csv("SS_001_500.csv")
 SS_501_1000old 		<- read.csv("SS_501_1000.csv")
@@ -23,9 +23,6 @@ newformat_studysite <- rbind.data.frame(SS_001_500verified, SS_501_1000verified)
 verified_article_ids <- unique(newformat_studysite$Article.ID)
 
 oldformat_studysite_notverified <- oldformat_studysite[!oldformat_studysite$Article.ID%in%verified_article_ids,]
-
-install.packages("stringr")
-library("stringr")
 
 study_sites_split <- data.frame(str_split_fixed(as.character(oldformat_studysite_notverified$Location.of.study),",",n=2))
 colnames(study_sites_split) <- c("small_site", "large_site")
@@ -51,3 +48,6 @@ unique_large_sites <- sort(unique(SS_combined$Location.of.large.study.site))
 oldformat_studysite_notverified[oldformat_studysite_notverified$Location.of.study=="Yasuní National Park",]
 
 newformat_studysite[newformat_studysite$Location.of.large.study.site=="Yasuní National Park",]
+
+write.csv(unique_large_sites, file = 'uniqueLargeSites.csv', row.names = FALSE)
+saveRDS(unique_small_sites, file = 'uniqueSmallSites.RDS')
