@@ -1,4 +1,4 @@
-setwd("G:/My Drive/Graduate School/Research/Projects/SocialityConservationAnalyses/Data")
+setwd("~/Desktop/Desktop/Cleaned PREDICT data")
 library("stringr")
 
 #read in SS data
@@ -98,3 +98,24 @@ all_possible_article_ids <- 1:3982
 
 #missing article IDs based on SS data
 SS_article_IDs[!(SS_article_IDs%in%behavior_article_ids)]
+
+----
+# This section of code helps to identify lines that have been entered for either SS or behavior
+
+dim(oldformat_studysite)
+studysiteunique <- oldformat_studysite[!duplicated(oldformat_studysite[,c("Article.ID","Study.Site.ID")]),]
+dim(studysiteunique)
+studysiteIDfromSS <- as.character(factor(factor(studysiteunique$Article.ID):factor(studysiteunique$Study.Site.ID)))
+studysiteIDfromSS
+
+dim(all_behavior)
+behaviorunique <- all_behavior[!duplicated(all_behavior[,c("Article.ID","Study.Site.ID")]),]
+dim(behaviorunique)
+studysiteIDfrombehavior <- as.character(factor(factor(behaviorunique$Article.ID):factor(behaviorunique$Study.Site.ID)))
+studysiteIDfrombehavior
+
+inSSnotBehavior <- studysiteIDfromSS[!studysiteIDfromSS %in% studysiteIDfrombehavior]
+write.csv(inSSnotBehavior,"inSSnotBehavior.csv", row.names=F)
+
+inBehaviornotSS <- studysiteIDfrombehavior[!studysiteIDfrombehavior %in% studysiteIDfromSS]
+write.csv(inBehaviornotSS, "inBehaviornotSS.csv", row.names=F)
