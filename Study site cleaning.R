@@ -1,4 +1,5 @@
-setwd("~/Desktop/Desktop/Cleaned PREDICT data")
+#setwd("~/Desktop/Desktop/Cleaned PREDICT data")
+setwd('G:/My Drive/Graduate School/Research/Projects/SocialityConservationAnalyses/Data')
 library("stringr")
 
 #read in SS data
@@ -6,7 +7,7 @@ library("stringr")
 SS_001_500old 		<- read.csv("SS_001_500.csv")
 SS_501_1000old 		<- read.csv("SS_501_1000.csv")
 SS_001_500verified 	<- read.csv("SS_001_500_verified.csv")
-SS_501_1000verified <- read.csv("SS_501_1000_verified.csv")
+SS_501_1000verified 	<- read.csv("SS_501_1000_verified.csv")
 SS_1001_1500	 	<- read.csv("SS_1001_1500.csv")
 SS_1501_2000	 	<- read.csv("SS_1501_2000.csv")
 SS_2001_2500	 	<- read.csv("SS_2001_2500.csv")
@@ -34,9 +35,6 @@ oldformat_studysite_notverified <- oldformat_studysite[!oldformat_studysite$Arti
 
 
 #split study sites by small sites and large sites
-install.packages("stringr")
-library("stringr")
-
 study_sites_split <- data.frame(str_split_fixed(as.character(oldformat_studysite_notverified$Location.of.study),",",n=2))
 colnames(study_sites_split) <- c("small_site", "large_site")
 
@@ -69,8 +67,7 @@ write.csv(unique_small_sites, "unique_small_sites.csv", row.names=FALSE)
 write.csv(unique_large_sites, "unique_large_sites.csv", row.names=FALSE)
 
 #reading in behavior data
-
-behavior_001_500 		<- read.csv("behavior_001_500.csv")
+behavior_001_500 			<- read.csv("behavior_001_500.csv")
 behavior_501_1000 		<- read.csv("behavior_501_1000.csv")
 behavior_1001_1500	 	<- read.csv("behavior_1001_1500.csv")
 behavior_1501_2000	 	<- read.csv("behavior_1501_2000.csv")
@@ -94,7 +91,7 @@ SS_article_IDs <- c(nonverified_article_ids, verified_article_ids)
 behavior_article_ids <- unique( all_behavior$Article.ID)
 max(behavior_article_ids, na.rm=TRUE)
 
-all_possible_article_ids <- 1:3982
+all_possible_article_ids <- 1:3990
 
 #missing article IDs based on SS data
 SS_article_IDs[!(SS_article_IDs%in%behavior_article_ids)]
