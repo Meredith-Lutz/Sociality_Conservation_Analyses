@@ -315,3 +315,5 @@ summarizedKamilarData	<- merge(KamilarDataMean, KamilarDatacv, by.x="Species", b
 plot(log10(summarizedKamilarData$MeanGroupSize), summarizedKamilarData$CVGroupSize, xlim=c(0,2), ylim=c(0,1.4), pch=16, xaxt="n", xlab="Log of Mean Group Size", ylab="Coefficient of Variation in Group Size")
 axis(1,at=c(0,1,2),labels=c(1,10,100))
 dev.off()
+
+##### TESTING #####
