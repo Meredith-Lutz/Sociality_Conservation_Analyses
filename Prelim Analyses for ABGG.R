@@ -317,3 +317,12 @@ axis(1,at=c(0,1,2),labels=c(1,10,100))
 dev.off()
 
 ##### Hello
+##### Sricharan's subset attempts
+
+group <- subset(behaviorAll, select=c(Genus, species, Mean.individuals, SD.individuals, N.groups, Median.individuals))
+groupFM <- subset(behaviorAll, select=c(Genus, species, Mean.adult.females, SD.adult.females, Median.adult.females, Min...adult.females, Max...adult.females, Mean.adult.males, SD.Adult.males, Median.adult.males, Min...adult.males, Max...adult.males))
+groupDT <- subset(behaviorAll, select=c(Genus, species, Predation.report., Predation...aerial., Predation...terrestrial., Predation...snake.))
+groupFD <- subset(behaviorAll, select=c(Genus, species, Seasonal.Feeding.Data.Available., Diet.methodology, X..plant.reproductive.parts, X..folivory, Type.of.leaves, X..insects, X..fungus, Insect.eater., Fungus.eater., Dietary.ecology.study))
+
+
+
