@@ -323,6 +323,32 @@ group <- subset(behaviorAll, select=c(Genus, species, Mean.individuals, SD.indiv
 groupFM <- subset(behaviorAll, select=c(Genus, species, Mean.adult.females, SD.adult.females, Median.adult.females, Min...adult.females, Max...adult.females, Mean.adult.males, SD.Adult.males, Median.adult.males, Min...adult.males, Max...adult.males))
 groupDT <- subset(behaviorAll, select=c(Genus, species, Predation.report., Predation...aerial., Predation...terrestrial., Predation...snake.))
 groupFD <- subset(behaviorAll, select=c(Genus, species, Seasonal.Feeding.Data.Available., Diet.methodology, X..plant.reproductive.parts, X..folivory, Type.of.leaves, X..insects, X..fungus, Insect.eater., Fungus.eater., Dietary.ecology.study))
+groupDS <- subset(behaviorAll, select=c(Genus, species, Female.dispersal, Female.secondary.dispersal, Male.dispersal, Male.secondary.dispersal))
+
+groupALL <- subset(behaviorAll, Allomaternal.care == "Yes", select =Article.ID)
+install.packages("janitor")
+library(janitor)
+str(behaviorAll)
+tabyl(behaviorAll, GSP, Allomaternal.care)
+
+adorn_totals("col") %>%
+adorn_percentages("row") %>%
+adorn_pct_formatting(digits = 2) %>%
+adorn_ns() %>%
+adorn_title()
+
+tabyl(behaviorAll, GSP, Social.learning)
+
+tabyl(behaviorAll, GSP, Predation.report., Predation...aerial.)
+
+tabyl(behaviorAll, GSP, Habitat.loss, Habitat.fragmentation)
+
+tabyl(behaviorAll, GSP, Activity.pattern)
+
+tabyl(behaviorAll, GSP, Female.dispersal, Female.secondary.dispersal)
+
+tabyl(behaviorAll, GSP, Social.learning)
 
 
-
+library(stringr)
+behaviorAll$GSP <- str_c(behaviorAll$Genus, '', behaviorAll$species)
