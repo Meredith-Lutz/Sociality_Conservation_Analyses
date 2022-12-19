@@ -29,7 +29,7 @@ behaviorAll	<- rbind(behavior001_500, behavior501_1000, behavior1001_1500, behav
 #Replace "Parc National des Volcans" in the 3rd line of this section with the study site you are looking up
 studySite$articleIDssID		<- factor(factor(studySite$Article.ID):factor(studySite$Study.Site.ID))
 behaviorAll$articleIDssID	<- factor(factor(behaviorAll$Article.ID):factor(behaviorAll$Study.Site.ID))
-relevantArticleSSIDs		<- as.character(studySite[studySite$Location.of.large.site == 'Parc National des Volcans' & is.na(studySite$Location.of.large.site) == FALSE, 'articleIDssID'])
+relevantArticleSSIDs		<- as.character(studySite[studySite$Location.of.large.site == "Parc National des Volcans" & is.na(studySite$Location.of.large.site) == FALSE, 'articleIDssID'])
 
 #Now pull all of the relevant behavior lines for those article/ss ID combos
 relevantBehaviorLines		<- behaviorAll[behaviorAll$articleIDssID %in% relevantArticleSSIDs,]
@@ -40,7 +40,7 @@ table(relevantBehaviorLines$Names.of.group)
 #Notice how there is "Beetsme's group" "Beetsme's Group" and "BEE" - all need to be combined, and similar problems throughout
 
 #Use this line to find the article IDs for the group name you want to change
-relevantBehaviorLines[relevantBehaviorLines$Names.of.group == 'BEE',c(1:11, 92)]
+relevantBehaviorLines[relevantBehaviorLines$Names.of.group == '',c(1:11, 92)]
 
 ###########################
 ### Ignore this section ###
@@ -48,3 +48,19 @@ relevantBehaviorLines[relevantBehaviorLines$Names.of.group == 'BEE',c(1:11, 92)]
 largeSiteCountry	<- aggregate(as.numeric(studySite[,22]), by = list(studySite$Country, as.character(studySite$Location.of.large.site)), FUN = sum)[,1:2]
 largeSiteCountry	<- largeSiteCountry[order(largeSiteCountry$Group.1, largeSiteCountry$Group.2),]
 write.csv(largeSiteCountry, "largeSiteCountry.csv", row.names = FALSE)
+
+countries	<- sort(unique(studySite$Country))
+studySite	<- studySite[order(studySite$Country, studySite$Location.of.large.site),]
+
+for(i in countries){
+	print(paste('Working on', i))
+	largeSites	<- unique(studySite[studySite$Country == i, 'Location.of.large.site'])
+	for(j in largeSites){
+		smallSites	<- unique(studySite[studySite$Country == i & studySite$Location.of.large.site == j & is.na(studySite$Location.of.large.site) == FALSE, 'Location.of.small.site'])
+		if(length(smallSites) >= 2){
+			if('' %in% smallSites){
+				print(paste('Revisit small sites for', j))
+			}
+		}
+	}
+}
