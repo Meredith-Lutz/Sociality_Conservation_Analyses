@@ -85,3 +85,9 @@ for(i in allArticleIDs ) {
 
 			}
 }
+
+finalversion <- merge(currentformat_studysite, revisedStudySiteNames, by.x=c("Coder.Initials", "Article.ID", "Study.Site.ID"), by.y=c("Coder.Initials", "Article.ID", "Study.site.ID"), all.x=TRUE)
+
+finalversion <- finalversion[order(finalversion$Article.ID, finalversion$Coder.Initials, finalversion$Study.Site.ID),]
+
+write.csv(finalversion, "SS_merged_open_refine.csv")
