@@ -47,3 +47,44 @@ social_organization <- aggregate(behaviorAll$Social.organization, by= list(behav
 #until you find a blank, if all of them call the variable 0 (1 = has values) -> general column for 
 #specific data per column use aggregate () as done above
 #watch out for numerical vs categorical variables  
+
+allomaternal_care <- aggregate(behaviorAll$Allomaternal.care, by= list(behaviorAll$sciName), FUN = length)
+
+#social learning, only yes 
+#df[df$var1 == 'value', ]
+behaviorAll <- behaviorAll[behaviorAll$Social.learning == 'Yes',] #selecting only for "yes"
+social_learning <- aggregate(behaviorAll$Social.learning, by= list(behaviorAll$sciName), FUN = length)
+#need to change behaviorAll back to the original, otherwise I have less variables 
+
+#Intergroup encounter study
+behaviorAll <- behaviorAll[behaviorAll$Intergroup.encounter.study. == 'Yes',] #selecting only for "yes"
+intergroup_encounter_study <- aggregate(behaviorAll$Intergroup.encounter.study., by= list(behaviorAll$sciName), FUN = length)
+
+#mean/median/min/max_individuals
+mean_individuals <- aggregate(behaviorAll$Mean.individuals, by= list(behaviorAll$sciName), FUN = length)
+median_individuals <- aggregate(behaviorAll$Median.individuals, by= list(behaviorAll$sciName), FUN = length)
+min_individuals <- aggregate(behaviorAll$Min...of.individuals, by= list(behaviorAll$sciName), FUN = length)
+max_individuals <- aggregate(behaviorAll$Max...of.individuals, by= list(behaviorAll$sciName), FUN = length)
+
+#mean/median/min/max_adult_females
+mean_adult_females <- aggregate(behaviorAll$Mean.adult.females, by= list(behaviorAll$sciName), FUN = length)
+median_adult_females <- aggregate(behaviorAll$Median.adult.females, by= list(behaviorAll$sciName), FUN = length)
+min_adult_females <- aggregate(behaviorAll$Min...adult.females, by= list(behaviorAll$sciName), FUN = length)
+max_adult_females <- aggregate(behaviorAll$Max...adult.females, by= list(behaviorAll$sciName), FUN = length)
+
+#mean/median/min/max_adult_males
+mean_adult_males <- aggregate(behaviorAll$Mean.adult.males, by= list(behaviorAll$sciName), FUN = length)
+median_adult_males <- aggregate(behaviorAll$Median.adult.males, by= list(behaviorAll$sciName), FUN = length)
+min_adult_males <- aggregate(behaviorAll$Min...adult.males, by= list(behaviorAll$sciName), FUN = length)
+max_adult_males <- aggregate(behaviorAll$Max...adult.males, by= list(behaviorAll$sciName), FUN = length)
+
+#mean/median/min/max_general 
+#**do I combine with rbind everything to make a general column, or is the general col "individuals"**
+
+mean_general <- rbind(mean_individuals, mean_adult_females, mean_adult_males)
+median_general <- rbind(median_individuals, median_adult_females, median_adult_males)
+min_general <- rbind(min_individuals, min_adult_females, min_adult_males)
+max_general <- rbind(max_individuals, max_adult_females, max_adult_females
+
+#need to add column with general groups 
+behaviorAll <- behaviorAll$mean_general
