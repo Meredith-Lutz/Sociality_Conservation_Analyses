@@ -29,7 +29,7 @@ behaviorAll	<- rbind(behavior001_500, behavior501_1000, behavior1001_1500, behav
 #Replace "Parc National des Volcans" in the 3rd line of this section with the study site you are looking up
 studySite$articleIDssID		<- factor(factor(studySite$Article.ID):factor(studySite$Study.Site.ID))
 behaviorAll$articleIDssID	<- factor(factor(behaviorAll$Article.ID):factor(behaviorAll$Study.Site.ID))
-relevantArticleSSIDs		<- as.character(studySite[studySite$Location.of.large.site == "Parc National des Volcans" & is.na(studySite$Location.of.large.site) == FALSE, 'articleIDssID'])
+relevantArticleSSIDs		<- as.character(studySite[studySite$Location.of.large.site == "Baimaxueshan National Nature Reserve" & is.na(studySite$Location.of.large.site) == FALSE, 'articleIDssID'])
 
 #Now pull all of the relevant behavior lines for those article/ss ID combos
 relevantBehaviorLines		<- behaviorAll[behaviorAll$articleIDssID %in% relevantArticleSSIDs,]
