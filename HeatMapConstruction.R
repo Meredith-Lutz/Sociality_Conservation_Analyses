@@ -7,7 +7,6 @@
 
 setwd("C:/Users/arian/OneDrive/Desktop/PREdiCT")
 
-install.packages("ape")
 library(ape)
 
 behavior001_500	<- read.csv('Article Coding Database (IDs_ 001 - 500) - Behavior data.csv', stringsAsFactors = FALSE)
@@ -78,13 +77,81 @@ median_adult_males <- aggregate(behaviorAll$Median.adult.males, by= list(behavio
 min_adult_males <- aggregate(behaviorAll$Min...adult.males, by= list(behaviorAll$sciName), FUN = length)
 max_adult_males <- aggregate(behaviorAll$Max...adult.males, by= list(behaviorAll$sciName), FUN = length)
 
-#mean/median/min/max_general 
-#**do I combine with rbind everything to make a general column, or is the general col "individuals"**
 
-mean_general <- rbind(mean_individuals, mean_adult_females, mean_adult_males)
-median_general <- rbind(median_individuals, median_adult_females, median_adult_males)
-min_general <- rbind(min_individuals, min_adult_females, min_adult_males)
-max_general <- rbind(max_individuals, max_adult_females, max_adult_females
 
-#need to add column with general groups 
-behaviorAll <- behaviorAll$mean_general
+socialData$monthNum <- ifelse(socialData$Month == 'Jan', '01',
+                              ifelse(socialData$Month == 'Feb', '02',
+                                     ifelse(socialData$Month == 'Mar', '03',
+                                            ifelse(socialData$Month == 'Apr', '04',
+                                                   ifelse(socialData$Month == 'May', '05',
+                                                          ifelse(socialData$Month == 'Jun', '06',
+                                                                 ifelse(socialData$Month == 'Jul', '07',
+                                                                            ifelse(socialData$Month == 'Sep', '09',
+                                                                           ifelse(socialData$Month == 'Oct', '10',
+                               
+                     
+                             
+    
+  behaviorAll$Mean.adult.males == 17 | behaviorAll$Mean.adult.males == 32 | behaviorAll$Mean.adult.males == 2.94 |
+  behaviorAll$Mean.adult.males == 1.36 |  behaviorAll$Mean.adult.males == 1.33 |  behaviorAll$Mean.adult.males ==  1.45 |
+  behaviorAll$Mean.adult.males ==  2.51 | behaviorAll$Mean.adult.males ==  1.5 | behaviorAll$Mean.adult.males == 2.89 |
+  behaviorAll$Mean.adult.males == 2.71 |  behaviorAll$Mean.adult.males == 2.5 |  behaviorAll$Mean.adult.males == 2.86 |  behaviorAll$Mean.adult.males == 3.29 |
+  behaviorAll$Mean.adult.males == 2.88 |  behaviorAll$Mean.adult.males == 3.36| behaviorAll$Mean.adult.males == 2.86 |
+  behaviorAll$Mean.adult.males == 0.71 | behaviorAll$Mean.adult.males == 1.75 | behaviorAll$Mean.adult.males == 1.25 |
+  behaviorAll$Mean.adult.males == 2.24 | behaviorAll$Mean.adult.males == 2.71 | behaviorAll$Mean.adult.males == 2.36 |behaviorAll$Mean.adult.males ==  2.15 |   
+  behaviorAll$Mean.adult.males == 6.1 |  behaviorAll$Mean.adult.males == 3.90 |  behaviorAll$Mean.adult.males ==  2.90 | behaviorAll$Mean.adult.males == 2.50 |
+  behaviorAll$Mean.adult.males == 2.09 |  behaviorAll$Mean.adult.males ==  2.58 |  behaviorAll$Mean.adult.males ==  1.87 |
+  behaviorAll$Mean.adult.males == 2.37| behaviorAll$Mean.adult.males == 1.89 |  behaviorAll$Mean.adult.males == 3.46 |  behaviorAll$Mean.adult.males == 1.43 |
+  behaviorAll$Mean.adult.males == 2.54 | behaviorAll$Mean.adult.males == 1.33 |  behaviorAll$Mean.adult.males == 106 | behaviorAll$Mean.adult.males == 7.7 |
+  behaviorAll$Mean.adult.males == 41 |  behaviorAll$Mean.adult.males == 96.8 |  behaviorAll$Mean.adult.males == 17 | behaviorAll$Mean.adult.males == 2.9 |
+  behaviorAll$Mean.adult.males == 3.5 | behaviorAll$Mean.adult.males == 2 | 
+  behaviorAll$Mean.adult.males == 5 | behaviorAll$Mean.adult.males == 4.1 |  behaviorAll$Mean.adult.males == 1.5 | behaviorAll$Mean.adult.males == 1.73 | behaviorAll$Mean.adult.males == 1.97 |
+  behaviorAll$Mean.adult.males == 1.36 |  behaviorAll$Mean.adult.males == 1.17 | behaviorAll$Mean.adult.males == 2.33 |  behaviorAll$Mean.adult.males == 0.89 |
+  behaviorAll$Mean.adult.males == 2.22 |  behaviorAll$Mean.adult.males == 1.29 |  behaviorAll$Mean.adult.males ==  1.15 |
+  behaviorAll$Mean.adult.males == 1.13 |  behaviorAll$Mean.adult.males ==  1.20 | behaviorAll$Mean.adult.males == 1.25 | behaviorAll$Mean.adult.males == 1.57 | behaviorAll$Mean.adult.males == 1.50 |
+  behaviorAll$Mean.adult.males == 1.14|  behaviorAll$Mean.adult.males == 0.80 |
+        
+        ifelse(socialData$Month == 'Nov', '11', '12')))))))))))
+#General_male_mean
+behaviorAll$generalmean_male <- ifelse (behaviorAll$Mean.adult.males == 0 | behaviorAll$Mean.adult.males == 1 | behaviorAll$Mean.adult.males ==  2.32 | behaviorAll$Mean.adult.males == 4 | behaviorAll$Mean.adult.males == 9 |
+                                          behaviorAll$Mean.adult.males == 1.26 | behaviorAll$Mean.adult.males == 3.75 | behaviorAll$Mean.adult.males == 13 |
+                                          behaviorAll$Mean.adult.males == 3.5 | behaviorAll$Mean.adult.males == 4.3| behaviorAll$Mean.adult.males == 3.2| behaviorAll$Mean.adult.males == 1.5 |
+                                          behaviorAll$Mean.adult.males == 1.6 | behaviorAll$Mean.adult.males == 1.83 | behaviorAll$Mean.adult.males  == 6 |behaviorAll$Mean.adult.males == 5 |
+                                          behaviorAll$Mean.adult.males == 3.83 | behaviorAll$Mean.adult.males == 11 | behaviorAll$Mean.adult.males == 1.8 | behaviorAll$Mean.adult.males == 2.6|
+                                          behaviorAll$Mean.adult.males == 12 | behaviorAll$Mean.adult.males == 3.06 | behaviorAll$Mean.adult.males == 1.9 | behaviorAll$Mean.adult.males == 19 |
+                                          behaviorAll$Mean.adult.males == 15 | behaviorAll$Mean.adult.males == 10 | behaviorAll$Mean.adult.males == 7 | behaviorAll$Mean.adult.males == 2.73 |
+                                          behaviorAll$Mean.adult.males == 1.1 | behaviorAll$Mean.adult.males == 1.4 | behaviorAll$Mean.adult.males == 1.3 | behaviorAll$Mean.adult.males == 0.7 | behaviorAll$Mean.adult.males == 2.75 |  behaviorAll$Mean.adult.males == 2.44 |  behaviorAll$Mean.adult.males == 2.08 |
+                                          behaviorAll$Mean.adult.males == 1.6 | behaviorAll$Mean.adult.males == 2.4 | behaviorAll$Mean.adult.males == 2.5 | behaviorAll$Mean.adult.males == 2.05 | behaviorAll$Mean.adult.males == 1.83 |  behaviorAll$Mean.adult.males == |  behaviorAll$Mean.adult.males == 26 |
+                                          behaviorAll$Mean.adult.males == 1.750 |  behaviorAll$Mean.adult.males == 2.3 |  behaviorAll$Mean.adult.males == 3.9 |  behaviorAll$Mean.adult.males == 2.2 |  behaviorAll$Mean.adult.males == 1.42 | behaviorAll$Mean.adult.males == 9 |  behaviorAll$Mean.adult.males == 20 |
+                                          behaviorAll$Mean.adult.males == 1.580 |  behaviorAll$Mean.adult.males == 8 |  behaviorAll$Mean.adult.males == 1.7 |  behaviorAll$Mean.adult.males == 18 |  behaviorAll$Mean.adult.males == 16 | behaviorAll$Mean.adult.males == 4.54 |  behaviorAll$Mean.adult.males == 27 | 
+                                          behaviorAll$Mean.adult.males == 1.375 |  behaviorAll$Mean.adult.males ==  0.17 |  behaviorAll$Mean.adult.males == 12 |  behaviorAll$Mean.adult.males == 33 | behaviorAll$Mean.adult.males == 3.3 | behaviorAll$Mean.adult.males == 11 |  behaviorAll$Mean.adult.males == 26.9 |
+                                          behaviorAll$Mean.adult.males == 24.3 | behaviorAll$Mean.adult.males == 2.92 | behaviorAll$Mean.adult.males == 3.33 | behaviorAll$Mean.adult.males == 2.67 | behaviorAll$Mean.adult.males == 1.246875 | behaviorAll$Mean.adult.males == 1.717949 |  behaviorAll$Mean.adult.males == 7.07 |
+                                          behaviorAll$Mean.adult.males == 4.5 | behaviorAll$Mean.adult.males == 3.5 | behaviorAll$Mean.adult.males == 0.89 | behaviorAll$Mean.adult.males == 4.43 | behaviorAll$Mean.adult.males ==9.14 |behaviorAll$Mean.adult.males == 14 |  behaviorAll$Mean.adult.males == 1.291 |
+                                          behaviorAll$Mean.adult.males == 31.0 | behaviorAll$Mean.adult.males == 6 | behaviorAll$Mean.adult.males == 6.23 | behaviorAll$Mean.adult.males == 3.6 | behaviorAll$Mean.adult.males == 8.66 | behaviorAll$Mean.adult.males == 13 |  behaviorAll$Mean.adult.males == 21 |
+                                          behaviorAll$Mean.adult.males == 3.2 | behaviorAll$Mean.adult.males == 6.67 | behaviorAll$Mean.adult.males == 2.20 | behaviorAll$Mean.adult.males == 5.1 | behaviorAll$Mean.adult.males == 4.714286 | behaviorAll$Mean.adult.males == 32 |  behaviorAll$Mean.adult.males ==  |
+                                          behaviorAll$Mean.adult.males == 23 |  behaviorAll$Mean.adult.males == 44 |  behaviorAll$Mean.adult.males == 47 |  behaviorAll$Mean.adult.males == 155 |  behaviorAll$Mean.adult.males == 31 |  behaviorAll$Mean.adult.males == 2.7 |  behaviorAll$Mean.adult.males == 17 | 
+                                          behaviorAll$Mean.adult.males == 42 |  behaviorAll$Mean.adult.males == 39 |  behaviorAll$Mean.adult.males == 55 |  behaviorAll$Mean.adult.males == 82 |  behaviorAll$Mean.adult.males == 189 |  behaviorAll$Mean.adult.males == 24 |  behaviorAll$Mean.adult.males == 7.67 |
+                                          behaviorAll$Mean.adult.males == 7.3 |  behaviorAll$Mean.adult.males == 22 |  behaviorAll$Mean.adult.males == 21 |  behaviorAll$Mean.adult.males == 6.8 |  behaviorAll$Mean.adult.males == 25 |  behaviorAll$Mean.adult.males == 4.54 |  behaviorAll$Mean.adult.males == 3.8|  
+                                          behaviorAll$Mean.adult.males == 17 | behaviorAll$Mean.adult.males == 32 | behaviorAll$Mean.adult.males == 2.94 |
+                                          behaviorAll$Mean.adult.males == 1.36 |  behaviorAll$Mean.adult.males == 1.33 |  behaviorAll$Mean.adult.males ==  1.45 |
+                                          behaviorAll$Mean.adult.males ==  2.51 | behaviorAll$Mean.adult.males ==  1.5 | behaviorAll$Mean.adult.males == 2.89 |
+                                          behaviorAll$Mean.adult.males == 2.71 |  behaviorAll$Mean.adult.males == 2.5 |  behaviorAll$Mean.adult.males == 2.86 |  behaviorAll$Mean.adult.males == 3.29 |
+                                          behaviorAll$Mean.adult.males == 2.88 |  behaviorAll$Mean.adult.males == 3.36| behaviorAll$Mean.adult.males == 2.86 |
+                                          behaviorAll$Mean.adult.males == 0.71 | behaviorAll$Mean.adult.males == 1.75 | behaviorAll$Mean.adult.males == 1.25 |
+                                          behaviorAll$Mean.adult.males == 2.24 | behaviorAll$Mean.adult.males == 2.71 | behaviorAll$Mean.adult.males == 2.36 |behaviorAll$Mean.adult.males ==  2.15 |   
+                                          behaviorAll$Mean.adult.males == 6.1 |  behaviorAll$Mean.adult.males == 3.90 |  behaviorAll$Mean.adult.males ==  2.90 | behaviorAll$Mean.adult.males == 2.50 |
+                                          behaviorAll$Mean.adult.males == 2.09 |  behaviorAll$Mean.adult.males ==  2.58 |  behaviorAll$Mean.adult.males ==  1.87 |
+                                          behaviorAll$Mean.adult.males == 2.37| behaviorAll$Mean.adult.males == 1.89 |  behaviorAll$Mean.adult.males == 3.46 |  behaviorAll$Mean.adult.males == 1.43 |
+                                          behaviorAll$Mean.adult.males == 2.54 | behaviorAll$Mean.adult.males == 1.33 |  behaviorAll$Mean.adult.males == 106 | behaviorAll$Mean.adult.males == 7.7 |
+                                          behaviorAll$Mean.adult.males == 41 |  behaviorAll$Mean.adult.males == 96.8 |  behaviorAll$Mean.adult.males == 17 | behaviorAll$Mean.adult.males == 2.9 |
+                                          behaviorAll$Mean.adult.males == 3.5 | behaviorAll$Mean.adult.males == 2 | 
+                                          behaviorAll$Mean.adult.males == 5 | behaviorAll$Mean.adult.males == 4.1 |  behaviorAll$Mean.adult.males == 1.5 | behaviorAll$Mean.adult.males == 1.73 | behaviorAll$Mean.adult.males == 1.97 |
+                                          behaviorAll$Mean.adult.males == 1.36 |  behaviorAll$Mean.adult.males == 1.17 | behaviorAll$Mean.adult.males == 2.33 |  behaviorAll$Mean.adult.males == 0.89 |
+                                          behaviorAll$Mean.adult.males == 2.22 |  behaviorAll$Mean.adult.males == 1.29 |  behaviorAll$Mean.adult.males ==  1.15 |
+                                          behaviorAll$Mean.adult.males == 1.13 |  behaviorAll$Mean.adult.males ==  1.20 | behaviorAll$Mean.adult.males == 1.25 | behaviorAll$Mean.adult.males == 1.57 | behaviorAll$Mean.adult.males == 1.50 |
+                                          behaviorAll$Mean.adult.males == 1.14|  behaviorAll$Mean.adult.males == 0.80 |)
+                                          
+
+socialData$season <- ifelse(socialData$month ==  1 | socialData$month == 2 | socialData$month == 3 , 'mating',
+                            ifelse(socialData$month == 7 | socialData$month == 8 | socialData$month == 9, 'birthing', 'other'))
+
