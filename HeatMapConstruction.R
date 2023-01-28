@@ -5,6 +5,19 @@
 ########################################
 
 
+
+##**Data required
+##*1)min, max, mean, median of females and males **completed** --> split with general **General = NEED HELP WITH GENERAL IFELSE FUNCTION**
+##*2) social organization --> simple **completed**
+##*3) dispersal: a) female b) secondary female c) male  d) secondary male **completed** --> split with general **General = NEED HELP WITH GENERAL IFELSE FUNCTION**
+##*4) allomaternal care --> only coded for "yes" **completed**
+##*5) social learnign --> only coded for "yes" **completed**
+##*6) intergroup encounter studies --> only coded for "yes" **completed**
+##*7) activity budget:  a) % social b) % grooming c) % feeding d) rate of aggresstion  e) submission --> split with general (anything that isn't blank) (confirm) **General = NEED HELP WITH GENERAL IFELSE FUNCTION**
+##*8) feeding data:  a) specific data (plant reproductive parts, fungi, insect, foliage)  b) general (anything that isn't blank) **General = NEED HELP WITH GENERAL IFELSE FUNCTION**
+##*9) home range size 
+
+
 setwd("C:/Users/arian/OneDrive/Desktop/PREdiCT")
 
 library(ape)
@@ -78,10 +91,89 @@ min_adult_males <- aggregate(behaviorAll$Min...adult.males, by= list(behaviorAll
 max_adult_males <- aggregate(behaviorAll$Max...adult.males, by= list(behaviorAll$sciName), FUN = length)
 
 
-                     
-                            
+#Dispersal -- simple portion (**need to confirm ifelse function with J/M) 
+##*dispersal: a) female b) secondary female c) male  d) secondary male 
+
+dispersal_female <- aggregate(behaviorAll$Female.dispersal, by= list(behaviorAll$sciName), FUN = length)     
+dispersal_sec_fem <- aggregate(behaviorAll$Female.secondary.dispersal, by= list(behaviorAll$sciName), FUN = length)
+dispersal_male <- aggregate(behaviorAll$Male.dispersal, by= list(behaviorAll$sciName), FUN = length)
+dispersal_sec_male <- aggregate(behaviorAll$Male.secondary.dispersal, by= list(behaviorAll$sciName), FUN = length)
     
  
+##*Activity budget
+##*activity budget:  a) % social b) % grooming c) % feeding d) rate of aggresstion  e) submission
+##**downloaded seasonal activity budget .csv* *check with J/M if code below is correct*
+
+activity001_500	<- read.csv('Article Coding Database (IDs_ 001 - 500) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
+activity501_1000	<- read.csv('Article Coding Database (IDs_ 501 - 1000) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
+activity1001_1500	<- read.csv('Article Coding Database (IDs_ 1001 - 1500) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
+activity1501_2000	<- read.csv('Article Coding Database (IDs_ 1501 - 2000) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
+activity2001_2500	<- read.csv('Article Coding Database (IDs_ 2001 - 2500) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
+activity2501_3000	<- read.csv('Article Coding Database (IDs_ 2501 - 3000) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
+activity3001_3500	<- read.csv('Article Coding Database (IDs_ 3001 - 3500) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
+activity3501_4000	<- read.csv('Article Coding Database (IDs_ 3501 - 4000) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
+#*ran, it works 
+
+lumper		<- read.csv('Taxonomy Conversion - Lumper Taxonomy Conversion.csv', stringsAsFactors = FALSE)
+IUCN_tax		<- read.csv('Taxonomy Conversion - IUCN Taxonomy Conversion.csv', stringsAsFactors = FALSE)
+TenKTrees		<- read.csv('Taxonomy Conversion - 10K Trees Taxonomy Conversion.csv', stringsAsFactors = FALSE)
+
+colnames(activity3501_4000) <- colnames(activity3001_3500) <- colnames(activity2501_3000) <- colnames(activity1501_2000) <- colnames(activity501_1000) <- colnames(activity2001_2500) <- colnames(activity1001_1500) <- colnames(activity001_500)
+#it works
+
+activityAll	<- rbind(activity001_500, activity501_1000, activity1001_1500, activity1501_2000,
+                     activity2001_2500, activity2501_3000, activity3001_3500, activity3501_4000) 
+
+activityAll$sciName	<- ifelse(activityAll$species == '' & activityAll$subspecies == '', activityAll$Genus,
+                              ifelse(activityAll$subspecies == '', paste(activityAll$Genus, '_', activityAll$species, sep = ''),
+                                     paste(activityAll$Genus, '_', activityAll$species, '_', activityAll$subspecies, sep = '')))
+##**does not work*
+##need to merge seasonal activity budget with behavior to match scientific name 
+## or I may no need this step if scientific name is already associated with article number in behaviorAl
+
+
+behaviorAll			<- merge(behaviorAll, lumper, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+behaviorAll			<- merge(behaviorAll, IUCN_tax, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+behaviorAll			<- merge(behaviorAll, TenKTrees, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+
+
+
+percent_social
+percent_grooming
+percent_feeding
+rate_aggression
+submission
+
+
+##**Feeding data 
+##*feeding data:  a) specific data (plant reproductive parts, fungi, insect, foliage)
+#**dowloaded seasonal feeding data*
+
+feeding001_500	<- read.csv('Article Coding Database (IDs_ 001 - 500) -Seasonal feeding data.csv', stringsAsFactors = FALSE)
+feeding501_1000	<- read.csv('Article Coding Database (IDs_ 501 - 1000) - Seasonal feeding data.csv', stringsAsFactors = FALSE)
+feeding1001_1500	<- read.csv('Article Coding Database (IDs_ 1001 - 1500) - Seasonal feeding data.csv', stringsAsFactors = FALSE)
+feeding1501_2000	<- read.csv('Article Coding Database (IDs_ 1501 - 2000) - Seasonal feeding data.csv', stringsAsFactors = FALSE)
+feeding2001_2500	<- read.csv('Article Coding Database (IDs_ 2001 - 2500) - Seasonal feeding data.csv', stringsAsFactors = FALSE)
+feeding2501_3000	<- read.csv('Article Coding Database (IDs_ 2501 - 3000) - Seasonal feeding data.csv', stringsAsFactors = FALSE)
+feeding3001_3500	<- read.csv('Article Coding Database (IDs_ 3001 - 3500) - Seasonal feeding data.csv', stringsAsFactors = FALSE)
+feeding3501_4000	<- read.csv('Article Coding Database (IDs_ 3501 - 4000) - Seasonal feeding data.csv', stringsAsFactors = FALSE)
+
+##*Home range size
+##**downloaded seasonal ranging data*
+
+homerange001_500	<- read.csv('Article Coding Database (IDs_ 001 - 500) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
+homerange501_1000	<- read.csv('Article Coding Database (IDs_ 501 - 1000) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
+homerange1001_1500	<- read.csv('Article Coding Database (IDs_ 1001 - 1500) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
+homerange1501_2000	<- read.csv('Article Coding Database (IDs_ 1501 - 2000) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
+homerange2001_2500	<- read.csv('Article Coding Database (IDs_ 2001 - 2500) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
+homerange2501_3000	<- read.csv('Article Coding Database (IDs_ 2501 - 3000) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
+homerange3001_3500	<- read.csv('Article Coding Database (IDs_ 3001 - 3500) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
+homerange3501_4000	<- read.csv('Article Coding Database (IDs_ 3501 - 4000) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
+
+
+
+
+
     
 #General_male_mean 
 #erorr keeps changing 
@@ -90,8 +182,7 @@ max_adult_males <- aggregate(behaviorAll$Max...adult.males, by= list(behaviorAll
 ##*a) different column names
 ##*b) eliminating | at the end 
 ##*c) running throuhg any spelling mistake 
-##*need to check repeated numbeers 
-##*
+##*need to check repeated numbeers **this next**
 behaviorAll$generalmean_male <- ifelse (behaviorAll$Mean.adult.males == 0 | behaviorAll$Mean.adult.males == 1 | behaviorAll$Mean.adult.males ==  2.32 | behaviorAll$Mean.adult.males == 4 | behaviorAll$Mean.adult.males == 9 |
                                           ifelse(behaviorAll$Mean.adult.males == 1.26 | behaviorAll$Mean.adult.males == 3.75 | behaviorAll$Mean.adult.males == 13 |
                                                    ifelse(behaviorAll$Mean.adult.males == 3.5 | behaviorAll$Mean.adult.males == 4.3| behaviorAll$Mean.adult.males == 3.2| behaviorAll$Mean.adult.males == 1.5 |
