@@ -84,11 +84,18 @@ median_adult_females <- aggregate(behaviorAll$Median.adult.females, by= list(beh
 min_adult_females <- aggregate(behaviorAll$Min...adult.females, by= list(behaviorAll$sciName), FUN = length)
 max_adult_females <- aggregate(behaviorAll$Max...adult.females, by= list(behaviorAll$sciName), FUN = length)
 
-#mean/median/min/max_adult_males
-mean_adult_males <- aggregate(behaviorAll$Mean.adult.males, by= list(behaviorAll$sciName), FUN = length)
-median_adult_males <- aggregate(behaviorAll$Median.adult.males, by= list(behaviorAll$sciName), FUN = length)
-min_adult_males <- aggregate(behaviorAll$Min...adult.males, by= list(behaviorAll$sciName), FUN = length)
-max_adult_males <- aggregate(behaviorAll$Max...adult.males, by= list(behaviorAll$sciName), FUN = length)
+#mean/median/min/max_adult_males 
+behaviorAll$Aggregatemale <- ifelse(is.na(behaviorAll$Mean.adult.males) == TRUE & is.na(behaviorAll$Median.adult.males) == TRUE & is.na(behaviorAll$Min...adult.males) == TRUE & is.na(behaviorAll$Max...adult.males) ==TRUE, 0,1)
+#0 are missing 
+#1 has at least 1 of the variables
+                                   
+table(behaviorAll$Aggregatemale) 
+
+aggregare_male <- aggregate(behaviorAll$Aggregatemale, by= list(behaviorAll$sciName), FUN = sum)
+
+
+#For general is.na == TRUE for all male, females, individual (12 totals:mean, max, median, min)
+#For individual follow behaviorAll$Aggregatemale for females and individuals --> 4 is.na
 
 
 #Dispersal -- simple portion (**need to confirm ifelse function with J/M) 
