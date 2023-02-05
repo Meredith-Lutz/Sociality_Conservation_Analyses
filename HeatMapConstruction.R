@@ -103,15 +103,14 @@ aggregare_individual <- aggregate(behaviorAll$Aggregateindividual, by= list(beha
 #**general mean/median/min/max*
 
 behaviorAll$Aggregategeneral <- ifelse(is.na(behaviorAll$Mean.adult.males) == TRUE & is.na(behaviorAll$Median.adult.males) == TRUE & is.na(behaviorAll$Min...adult.males) == TRUE & is.na(behaviorAll$Max...adult.males) ==TRUE & is.na(behaviorAll$Mean.adult.females) == TRUE & is.na(behaviorAll$Median.adult.females) == TRUE & is.na(behaviorAll$Min...adult.females) == TRUE & is.na(behaviorAll$Max...adult.females) ==TRUE &is.na(behaviorAll$Mean.individuals) == TRUE & is.na(behaviorAll$Median.individuals) == TRUE & is.na(behaviorAll$Min...of.individuals) == TRUE & is.na(behaviorAll$Max...of.individuals) ==TRUE, 0,))
-#error
-#error even without & is.na and with ifelse for each group (copied and pasted)
 
-behaviorAll$Aggregategeneral <- ifelse(is.na(behaviorAll$Aggregatefemale) == TRUE, 
-                                       ifelse(is.na(behaviorAll$Aggregatemale) == TRUE, 
-                                              ifelse(is.na(behaviorAll$Aggregateindividual) == TRUE, 1, 0))
- 
-behaviorAll$Aggregategeneral <- ifelse(is.na(behaviorAll$Aggregatefemale) == TRUE & is.na(behaviorAll$Aggregatemale) == TRUE & is.na(behaviorAll$Aggregateindividual) == TRUE, 1, 0)                                    
-#Error                                       
+
+
+behaviorAll$Aggregate_general <- ifelse(is.na(behaviorAll$Mean.individuals) == TRUE & is.na(behaviorAll$Mean.adult.females)== TRUE &is.na(behaviorAll$Mean.adult.males)== TRUE & is.na(behaviorAll$Median.individuals)== TRUE & is.na(behaviorAll$Median.adult.males)== TRUE & is.na(behaviorAll$Median.adult.females)== TRUE & is.na(behaviorAll$Min...of.individuals)== TRUE & is.na(behaviorAll$Min...adult.males)== TRUE & is.na(behaviorAll$Min...adult.females)== TRUE & is.na(behaviorAll$Max...of.individuals)== TRUE & is.na(behaviorAll$Max...adult.males)== TRUE & is.na(behaviorAll$Max...adult.females)== TRUE, 0,1)
+View(behaviorAll$Aggregate_general)
+table(behaviorAll$Aggregate_general)
+
+aggregate_general <- aggregate(behaviorAll$Aggregate_general, by= list(behaviorAll$sciName), FUN = sum)
                                        
 #**Dispersal*
 ##*dispersal: a) female b) secondary female c) male  d) secondary male 
@@ -128,7 +127,37 @@ behaviorAll$Aggregatemalesec_dispersal <- ifelse(is.na(behaviorAll$Male.secondar
 aggregate_malesec_dispersal <- aggregate(behaviorAll$Aggregatemalesec_dispersal, by= list(behaviorAll$sciName), FUN = sum)  
 
 
-behaviorAll$Aggregate_dispersal <- ifelse((is.na()))
+behaviorAll$Aggregate_dispersal <- ifelse(is.na(behaviorAll$Female.dispersal) == TRUE & is.na(behaviorAll$Female.secondary.dispersal) == TRUE & is.na(behaviorAll$Male.dispersal) == TRUE & is.na(behaviorAll$Male.secondary.dispersal) == TRUE, 0, 1)
+aggregate_dispersalgeneral <- aggregate(behaviorAll$Aggregate_dispersal, by= list(behaviorAll$sciName), FUN = sum)
+
+
+#**HOW TO MERGE SEASONAL DATA WITH SPECIES ID COLUMN**
+
+#**merging columns**
+df$New<-rowSums(df[, c("A", "B")], na.rm=T)
+df<-df[, c("ID", "New")]
+
+unite in tidyr 
+library(tidyr)
+df[is.na(df)] = ''
+unite(df, new, A:B, sep='')
+
+#**mergin g csv**
+library("dplyr")                                   
+library("plyr")                                     
+library("readr")
+
+data_all <- list.files(path = "C:/Users/Joach/Desktop/my_folder",  # Identify all CSV files
+                       pattern = "*.csv", full.names = TRUE) %>% 
+  lapply(read_csv) %>%                              # Store all files in list
+  bind_rows                                         # Combine data sets into one data set 
+data_all                                            # Print data to RStudio console
+
+as.data.frame(data_all)                            # Convert tibble to data.frame
+
+
+##https://www.statology.org/r-merge-csv-files/
+
 
 
 ##*Activity budget
