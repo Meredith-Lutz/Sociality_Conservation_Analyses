@@ -131,7 +131,7 @@ behaviorAll$Aggregate_dispersal <- ifelse(is.na(behaviorAll$Female.dispersal) ==
 aggregate_dispersalgeneral <- aggregate(behaviorAll$Aggregate_dispersal, by= list(behaviorAll$sciName), FUN = sum)
 
 
-#**HOW TO MERGE SEASONAL DATA WITH SPECIES ID COLUMN**
+#**HOW TO MERGE SEASONAL DATA WITH SPECIES ID COLUMN** -> need to merge sciname column
 
 #**merging columns**
 df$New<-rowSums(df[, c("A", "B")], na.rm=T)
@@ -155,9 +155,42 @@ data_all                                            # Print data to RStudio cons
 
 as.data.frame(data_all)                            # Convert tibble to data.frame
 
+csv_merged <- list.files("C:/Users/arian/OneDrive/Desktop/PREdiCT", 
+                         pattern = "*.csv", full.names = TRUE)
 
-##https://www.statology.org/r-merge-csv-files/
+  lapply(read_csv) %>%                              
+  bind_rows                                         
+data_all       
 
+as.data.frame(csv_merged)     
+# Table not correct, may be missing one step or code is incorrect 
+############
+#https://www.statology.org/r-merge-csv-files/
+
+data_all <- list.files(path='C:/Users/arian/OneDrive/Desktop/PREdiCT') %>% 
+  lapply(read_csv) %>% 
+  bind_rows 
+#error says: cannot open file 'C:/Users/arian/OneDrive/Desktop/PREdiCT/Sociality_Conservation_Analyses': Permission denied 
+
+###########
+##**merge function
+merge(x, y, by = intersect(names(x), names(y)),
+      by.x = by, by.y = by, all = FALSE, all.x = all, all.y = all,
+      sort = TRUE, suffixes = c(".x",".y"), no.dups = TRUE,
+      incomparables = NULL, …)
+      
+merge(x, y, by = intersect(names(behaviorAll), names(activityAll)),
+            by.x = by, by.y = by, all = FALSE, all.x = all, all.y = all,
+            sort = TRUE, suffixes = c("behaviorAll","activityAll"), no.dups = TRUE,
+            incomparables = NULL, …)
+# check c values needed -- cannot figure out what I should put here 
+
+#######
+write.table(file="Article Coding Database (IDs_ 001 - 500) - Seasonal activity budget data.csv",sep=",",append=TRUE,row.names=FALSE,col.names=FALSE)
+write.table(file="Article Coding Database (IDs_ 001 - 500) - Behavior data.csv",sep=",",append=TRUE,row.names=FALSE,col.names=FALSE)
+
+joined_df <- merge(mydf, mylookup, by.x = "OP_UNIQUE_CARRIER",   ##how to write csv in x="" and y"" - should I add them  all by number?
+                   by.y = "Code", all.x = TRUE, all.y = FALSE)
 
 
 ##*Activity budget
