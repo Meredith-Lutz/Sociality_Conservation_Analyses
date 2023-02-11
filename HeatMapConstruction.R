@@ -172,6 +172,14 @@ data_all <- list.files(path='C:/Users/arian/OneDrive/Desktop/PREdiCT') %>%
   bind_rows 
 #error says: cannot open file 'C:/Users/arian/OneDrive/Desktop/PREdiCT/Sociality_Conservation_Analyses': Permission denied 
 
+library(dplyr)
+library(readr)
+
+df <- list.files(path="C:/Users/arian/OneDrive/Desktop/PREdiCT'", full.names = TRUE) %>% 
+  lapply(read_csv) %>% 
+  bind_rows
+#0 observations and 0 variables 
+
 ###########
 ##**merge function
 merge(x, y, by = intersect(names(x), names(y)),
@@ -192,6 +200,34 @@ write.table(file="Article Coding Database (IDs_ 001 - 500) - Behavior data.csv",
 joined_df <- merge(mydf, mylookup, by.x = "OP_UNIQUE_CARRIER",   ##how to write csv in x="" and y"" - should I add them  all by number?
                    by.y = "Code", all.x = TRUE, all.y = FALSE)
 
+
+mergedall <- merge(behaviorAll, activityAll)
+
+
+merge(x, y, # Data frames or objects to be coerced
+      by = intersect(names(x), names(y)), # Columns used for merging
+      by.x = by, by.y = by, # Columns used for merging
+      all = FALSE, # If TRUE, all.x = TRUE and all.y = TRUE
+      all.x = all, all.y = all, # If TRUE, adds rows for each row in x (y) that not match a row in y (x).
+      sort = TRUE, # Whether to sort the output by the 'by' columns
+      suffixes = c(".x",".y"), # Suffixes for creating unique column names
+      no.dups = TRUE, # Whether to avoid duplicated column names appending more suffixes or not
+      incomparables = NULL, # How to deal with values that can not be matched
+      ...) # Additional arguments
+
+
+merge <- merge(behaviorAll, activityAll,
+      by = intersect(names("Sciname"), names("Article ID", "Study Site ID", "Date of Coding", "Type of data", "Names of group", "Seasonality Type", "Phase", "Phase Year", "% time feeding", "Data method for feeding", "% time social","Data method for social data", "% time grooming", "Data method for grooming data", "Rate of aggression", "Data method for aggression", "Rate of submission", "Data method for submission")))
+
+
+      by.x = by, by.y = by, 
+      all = TRUE, # If TRUE, all.x = TRUE and all.y = TRUE
+      all.x = all, all.y = all, # If TRUE, adds rows for each row in x (y) that not match a row in y (x).
+      sort = TRUE, # Whether to sort the output by the 'by' columns
+      suffixes = c(".x",".y"), # Suffixes for creating unique column names
+      no.dups = TRUE, # Whether to avoid duplicated column names appending more suffixes or not
+      incomparables = NULL, # How to deal with values that can not be matched
+      ...) # Additional arguments
 
 ##*Activity budget
 ##*activity budget:  a) % social b) % grooming c) % feeding d) rate of aggresstion  e) submission
