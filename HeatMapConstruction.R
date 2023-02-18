@@ -131,78 +131,17 @@ behaviorAll$Aggregate_dispersal <- ifelse(is.na(behaviorAll$Female.dispersal) ==
 aggregate_dispersalgeneral <- aggregate(behaviorAll$Aggregate_dispersal, by= list(behaviorAll$sciName), FUN = sum)
 
 
-#**HOW TO MERGE SEASONAL DATA WITH SPECIES ID COLUMN** -> need to merge sciname column
-
-#**merging columns**
-df$New<-rowSums(df[, c("A", "B")], na.rm=T)
-df<-df[, c("ID", "New")]
-
-unite in tidyr 
-library(tidyr)
-df[is.na(df)] = ''
-unite(df, new, A:B, sep='')
+#**HOW TO MERGE SEASONAL DATA WITH SPECIES ID COLUMN** -> need to merge sciname colum
 
 #**mergin g csv**
 library("dplyr")                                   
 library("plyr")                                     
 library("readr")
 
-data_all <- list.files(path = "C:/Users/Joach/Desktop/my_folder",  # Identify all CSV files
-                       pattern = "*.csv", full.names = TRUE) %>% 
-  lapply(read_csv) %>%                              # Store all files in list
-  bind_rows                                         # Combine data sets into one data set 
-data_all                                            # Print data to RStudio console
 
-as.data.frame(data_all)                            # Convert tibble to data.frame
-
-csv_merged <- list.files("C:/Users/arian/OneDrive/Desktop/PREdiCT", 
-                         pattern = "*.csv", full.names = TRUE)
-
-  lapply(read_csv) %>%                              
-  bind_rows                                         
-data_all       
-
-as.data.frame(csv_merged)     
-# Table not correct, may be missing one step or code is incorrect 
-############
-#https://www.statology.org/r-merge-csv-files/
-
-data_all <- list.files(path='C:/Users/arian/OneDrive/Desktop/PREdiCT') %>% 
-  lapply(read_csv) %>% 
-  bind_rows 
-#error says: cannot open file 'C:/Users/arian/OneDrive/Desktop/PREdiCT/Sociality_Conservation_Analyses': Permission denied 
 
 library(dplyr)
 library(readr)
-
-df <- list.files(path="C:/Users/arian/OneDrive/Desktop/PREdiCT'", full.names = TRUE) %>% 
-  lapply(read_csv) %>% 
-  bind_rows
-#0 observations and 0 variables 
-
-###########
-##**merge function
-merge(x, y, by = intersect(names(x), names(y)),
-      by.x = by, by.y = by, all = FALSE, all.x = all, all.y = all,
-      sort = TRUE, suffixes = c(".x",".y"), no.dups = TRUE,
-      incomparables = NULL, …)
-      
-merge(x, y, by = intersect(names(behaviorAll), names(activityAll)),
-            by.x = by, by.y = by, all = FALSE, all.x = all, all.y = all,
-            sort = TRUE, suffixes = c("behaviorAll","activityAll"), no.dups = TRUE,
-            incomparables = NULL, …)
-# check c values needed -- cannot figure out what I should put here 
-
-#######
-write.table(file="Article Coding Database (IDs_ 001 - 500) - Seasonal activity budget data.csv",sep=",",append=TRUE,row.names=FALSE,col.names=FALSE)
-write.table(file="Article Coding Database (IDs_ 001 - 500) - Behavior data.csv",sep=",",append=TRUE,row.names=FALSE,col.names=FALSE)
-
-joined_df <- merge(mydf, mylookup, by.x = "OP_UNIQUE_CARRIER",   ##how to write csv in x="" and y"" - should I add them  all by number?
-                   by.y = "Code", all.x = TRUE, all.y = FALSE)
-
-
-mergedall <- merge(behaviorAll, activityAll)
-
 
 merge(x, y, # Data frames or objects to be coerced
       by = intersect(names(x), names(y)), # Columns used for merging
@@ -216,18 +155,42 @@ merge(x, y, # Data frames or objects to be coerced
       ...) # Additional arguments
 
 
-merge <- merge(behaviorAll, activityAll,
-      by = intersect(names("Sciname"), names("Article ID", "Study Site ID", "Date of Coding", "Type of data", "Names of group", "Seasonality Type", "Phase", "Phase Year", "% time feeding", "Data method for feeding", "% time social","Data method for social data", "% time grooming", "Data method for grooming data", "Rate of aggression", "Data method for aggression", "Rate of submission", "Data method for submission")))
+
+mergeddata <- merge(behaviorAll, activityAll,
+                    by = intersect(names(behaviorAll), names(activityAll)),
+                    by.behaviorAll = c("Article.ID", "Study.Site.ID", "Date.of.Coding", "Type.of.Data", "Names.of.group"), by.activityAll = c("X.1", "X.2", "X.3", "X.4", "X.6"), 
+                    all.behaviorAll = TRUE)
+#WORKS
+
+mergeddata_1 <- merge(behaviorAll, activityAll,
+                    by = intersect(names(behaviorAll), names(activityAll)),
+                    by.behaviorAll = c("Article.ID", "Study.Site.ID", "Date.of.Coding", "Type.of.Data", "Names.of.group"), by.activityAll = c("X.1", "X.2", "X.3", "X.4", "X.6"), 
+                    all.behaviorAll = TRUE, all.activityAll = TRUE)
 
 
-      by.x = by, by.y = by, 
-      all = TRUE, # If TRUE, all.x = TRUE and all.y = TRUE
-      all.x = all, all.y = all, # If TRUE, adds rows for each row in x (y) that not match a row in y (x).
-      sort = TRUE, # Whether to sort the output by the 'by' columns
-      suffixes = c(".x",".y"), # Suffixes for creating unique column names
-      no.dups = TRUE, # Whether to avoid duplicated column names appending more suffixes or not
-      incomparables = NULL, # How to deal with values that can not be matched
-      ...) # Additional arguments
+#Doesnt work
+mergedALL$SciName	<- ifelse(mergeddata_1$species == '' & mergeddata_1$subspecies == '', amergeddata_1$Genus,
+                              ifelse(mergeddata_1$subspecies == '', paste(mergeddata_1$Genus, '_', mergeddata_1$species, sep = ''),
+                                     paste(mergeddata_1$Genus, '_', mergeddata_1$species, '_', mergeddata_1$subspecies, sep = '')))
+
+
+#Doesnt work
+activityAll$SciName	<- ifelse(activityAll$species == '' & activityAll$subspecies == '', activityAll$Genus,
+                             ifelse(activityAll$subspecies == '', paste(activityAll$Genus, '_', activityAll$species, sep = ''),
+                                    paste(activityAll$Genus, '_', activityAll$species, '_', activityAll$subspecies, sep = '')))
+
+
+
+#Doesnt work -- Error in `$<-.data.frame`(`*tmp*`, SciName, value = c("", "", "", "",  : 
+#replacement has 18078 rows, data has 993
+activityAll$SciName	<- ifelse(behaviorAll$species == '' & behaviorAll$subspecies == '', behaviorAll$Genus,
+                             ifelse(behaviorAll$subspecies == '', paste(behaviorAll$Genus, '_', behaviorAll$species, sep = ''),
+                                    paste(behaviorAll$Genus, '_', behaviorAll$species, '_', behaviorAll$subspecies, sep = '')))
+
+
+
+
+
 
 ##*Activity budget
 ##*activity budget:  a) % social b) % grooming c) % feeding d) rate of aggresstion  e) submission
@@ -253,7 +216,7 @@ colnames(activity3501_4000) <- colnames(activity3001_3500) <- colnames(activity2
 activityAll	<- rbind(activity001_500, activity501_1000, activity1001_1500, activity1501_2000,
                      activity2001_2500, activity2501_3000, activity3001_3500, activity3501_4000) 
 
-activityAll$sciName	<- ifelse(activityAll$species == '' & activityAll$subspecies == '', activityAll$Genus,
+activityAll$SciName	<- ifelse(activityAll$species == '' & activityAll$subspecies == '', activityAll$Genus,
                               ifelse(activityAll$subspecies == '', paste(activityAll$Genus, '_', activityAll$species, sep = ''),
                                      paste(activityAll$Genus, '_', activityAll$species, '_', activityAll$subspecies, sep = '')))
 ##**does not work*
@@ -261,9 +224,6 @@ activityAll$sciName	<- ifelse(activityAll$species == '' & activityAll$subspecies
 ## or I may no need this step if scientific name is already associated with article number in behaviorAl
 
 
-behaviorAll			<- merge(behaviorAll, lumper, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
-behaviorAll			<- merge(behaviorAll, IUCN_tax, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
-behaviorAll			<- merge(behaviorAll, TenKTrees, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
 
 
 
