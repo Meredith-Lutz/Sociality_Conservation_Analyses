@@ -154,48 +154,7 @@ merge(x, y, # Data frames or objects to be coerced
       incomparables = NULL, # How to deal with values that can not be matched
       ...) # Additional arguments
 
-
-
-mergeddata <- merge(behaviorAll, activityAll,
-                    by = intersect(names(behaviorAll), names(activityAll)),
-                    by.behaviorAll = c("Article.ID", "Study.Site.ID", "Date.of.Coding", "Type.of.Data", "Names.of.group"), by.activityAll = c("X.1", "X.2", "X.3", "X.4", "X.6"), 
-                    all.behaviorAll = TRUE)
-#WORKS
-
-mergeddata_1 <- merge(behaviorAll, activityAll,
-                    by = intersect(names(behaviorAll), names(activityAll)),
-                    by.behaviorAll = c("Article.ID", "Study.Site.ID", "Date.of.Coding", "Type.of.Data", "Names.of.group"), by.activityAll = c("X.1", "X.2", "X.3", "X.4", "X.6"), 
-                    all.behaviorAll = TRUE, all.activityAll = TRUE)
-
-
-#Doesnt work
-mergedALL$SciName	<- ifelse(mergeddata_1$species == '' & mergeddata_1$subspecies == '', amergeddata_1$Genus,
-                              ifelse(mergeddata_1$subspecies == '', paste(mergeddata_1$Genus, '_', mergeddata_1$species, sep = ''),
-                                     paste(mergeddata_1$Genus, '_', mergeddata_1$species, '_', mergeddata_1$subspecies, sep = '')))
-
-
-#Doesnt work
-activityAll$SciName	<- ifelse(activityAll$species == '' & activityAll$subspecies == '', activityAll$Genus,
-                             ifelse(activityAll$subspecies == '', paste(activityAll$Genus, '_', activityAll$species, sep = ''),
-                                    paste(activityAll$Genus, '_', activityAll$species, '_', activityAll$subspecies, sep = '')))
-
-
-
-#Doesnt work -- Error in `$<-.data.frame`(`*tmp*`, SciName, value = c("", "", "", "",  : 
-#replacement has 18078 rows, data has 993
-activityAll$SciName	<- ifelse(behaviorAll$species == '' & behaviorAll$subspecies == '', behaviorAll$Genus,
-                             ifelse(behaviorAll$subspecies == '', paste(behaviorAll$Genus, '_', behaviorAll$species, sep = ''),
-                                    paste(behaviorAll$Genus, '_', behaviorAll$species, '_', behaviorAll$subspecies, sep = '')))
-
-
-
-
-
-
 ##*Activity budget
-##*activity budget:  a) % social b) % grooming c) % feeding d) rate of aggresstion  e) submission
-##**downloaded seasonal activity budget .csv* *check with J/M if code below is correct*
-
 activity001_500	<- read.csv('Article Coding Database (IDs_ 001 - 500) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
 activity501_1000	<- read.csv('Article Coding Database (IDs_ 501 - 1000) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
 activity1001_1500	<- read.csv('Article Coding Database (IDs_ 1001 - 1500) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
@@ -216,36 +175,126 @@ colnames(activity3501_4000) <- colnames(activity3001_3500) <- colnames(activity2
 activityAll	<- rbind(activity001_500, activity501_1000, activity1001_1500, activity1501_2000,
                      activity2001_2500, activity2501_3000, activity3001_3500, activity3501_4000) 
 
-activityAll$SciName	<- ifelse(activityAll$species == '' & activityAll$subspecies == '', activityAll$Genus,
-                              ifelse(activityAll$subspecies == '', paste(activityAll$Genus, '_', activityAll$species, sep = ''),
-                                     paste(activityAll$Genus, '_', activityAll$species, '_', activityAll$subspecies, sep = '')))
-##**does not work*
-##need to merge seasonal activity budget with behavior to match scientific name 
-## or I may no need this step if scientific name is already associated with article number in behaviorAl
 
 
+mergeddata <- merge(behaviorAll, activityAll,
+                    by = intersect(names(behaviorAll), names(activityAll)),
+                    by.behaviorAll = c("Article.ID", "Study.Site.ID", "Date.of.Coding", "Type.of.Data", "Names.of.group"), by.activityAll = c("X.1", "X.2", "X.3", "X.4", "X.6"), 
+                    all.behaviorAll = TRUE)
+
+#WORKS
+
+mergeddata_1 <- merge(behaviorAll, activityAll,
+                    by = intersect(names(behaviorAll), names(activityAll)),
+                    by.behaviorAll = c("Article.ID", "Study.Site.ID", "Date.of.Coding", "Type.of.Data", "Names.of.group"), by.activityAll = c("X.1", "X.2", "X.3", "X.4", "X.6"), 
+                    all.behaviorAll = TRUE, all.activityAll = TRUE)
+View(mergeddata_1)
 
 
+mergeddata_1$SciName	<- ifelse(mergeddata_1$species == '' & mergeddata_1$subspecies == '', mergeddata_1$Genus,
+                              ifelse(mergeddata_1$subspecies == '', paste(mergeddata_1$Genus, '_', mergeddata_1$species, sep = ''),
+                                     paste(mergeddata_1$Genus, '_', mergeddata_1$species, '_', mergeddata_1$subspecies, sep = '')))
 
-percent_social
-percent_grooming
-percent_feeding
-rate_aggression
-submission
 
+mergeddata_1			<- merge(mergeddata_1, lumper, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+mergeddata_1			<- merge(mergeddata_1, IUCN_tax, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+mergeddata_1			<- merge(mergeddata_1, TenKTrees, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+#warning message
+
+
+##*activity budget:  a) % social b) % grooming c) % feeding d) rate of aggresstion  e) submission
+##*a) % social
+##*% time social in table as "X..time.social"
+
+#maybe need to do ifelse to gather data with names?
+
+activityAll$Aggregate_all <- ifelse(is.na(activityAll$X.10) == TRUE & is.na(activityAll$X.12)== TRUE &is.na(activityAll$X.14)== TRUE & is.na(activityAll$X.16)== TRUE & is.na(activityAll$Activity.Budget.Data)== TRUE, 0,1)
+
+mergeddata_1$Aggregate_all <- ifelse(is.na(mergeddata_1$X..time.feeding) == TRUE & is.na(mergeddata_1$X..time.grooming) == TRUE & is.na(mergeddata_1$X..time.social) == TRUE & is.na(mergeddata_1$Rate.of.aggression) == TRUE & is.na(mergeddata_1$Rate.of.submission) == TRUE, 0 ,1)
+
+mergeddata_1$X..time.social <- ifelse(is.na(mergeddata_1$X..time.social) == TRUE, 0, 1)
+
+mergeddata_1_social <- aggregate(mergeddata_1$X..time.social, list(mergeddata_1$sciName), FUN = length) #different results using FUN = sum
+#* unsure which FUN to use 
+#* prior to carry out ifelse option -- #error: Error in aggregate.data.frame(as.data.frame(x), ...) : arguments must have same length
+#* now error seems resolved 
+#* unsure if this is the right step
+
+table(mergeddata_1_social)
+
+#percent_feeding
+mergeddata_1$X..time.feeding <- ifelse(is.na(mergeddata_1$X..time.feeding) == TRUE, 0, 1)
+
+mergeddata_1_feeding <- aggregate(mergeddata_1$X..time.feeding, list(mergeddata_1$sciName), FUN = length)
+
+#percent_grooming
+
+mergeddata_1$X..time.grooming <- ifelse(is.na(mergeddata_1$X..time.grooming) == TRUE, 0, 1)
+
+mergeddata_1_grooming <- aggregate(mergeddata_1$X..time.grooming, list(mergeddata_1$sciName), FUN = length)
+
+#rate_aggression
+
+mergeddata_1$Rate.of.aggression <- ifelse(is.na(mergeddata_1$Rate.of.aggression) == TRUE, 0, 1)
+
+mergeddata_1_aggression <- aggregate(mergeddata_1$Rate.of.aggression, list(mergeddata_1$sciName), FUN = length)
+
+#rate_submission
+
+mergeddata_1$Rate.of.submission <- ifelse(is.na(mergeddata_1$Rate.of.submission) == TRUE, 0, 1)
+
+mergeddata_1_submission <- aggregate(mergeddata_1$Rate.of.submission, list(mergeddata_1$sciName), FUN = length)
 
 ##**Feeding data 
 ##*feeding data:  a) specific data (plant reproductive parts, fungi, insect, foliage)
-#**dowloaded seasonal feeding data*
 
-feeding001_500	<- read.csv('Article Coding Database (IDs_ 001 - 500) -Seasonal feeding data.csv', stringsAsFactors = FALSE)
-feeding501_1000	<- read.csv('Article Coding Database (IDs_ 501 - 1000) - Seasonal feeding data.csv', stringsAsFactors = FALSE)
-feeding1001_1500	<- read.csv('Article Coding Database (IDs_ 1001 - 1500) - Seasonal feeding data.csv', stringsAsFactors = FALSE)
-feeding1501_2000	<- read.csv('Article Coding Database (IDs_ 1501 - 2000) - Seasonal feeding data.csv', stringsAsFactors = FALSE)
-feeding2001_2500	<- read.csv('Article Coding Database (IDs_ 2001 - 2500) - Seasonal feeding data.csv', stringsAsFactors = FALSE)
-feeding2501_3000	<- read.csv('Article Coding Database (IDs_ 2501 - 3000) - Seasonal feeding data.csv', stringsAsFactors = FALSE)
-feeding3001_3500	<- read.csv('Article Coding Database (IDs_ 3001 - 3500) - Seasonal feeding data.csv', stringsAsFactors = FALSE)
-feeding3501_4000	<- read.csv('Article Coding Database (IDs_ 3501 - 4000) - Seasonal feeding data.csv', stringsAsFactors = FALSE)
+setwd("C:/Users/arian/OneDrive/Desktop/PREdiCT")
+
+library(ape)
+
+
+feeding001_500 <- read.csv("Article Coding Database (IDs_ 001 - 500) - Seasonal feeding data.csv",stringsAsFactors = FALSE)
+feeding501_1000	<- read.csv("Article Coding Database (IDs_ 501 - 1000) - Seasonal feeding data.csv", stringsAsFactors = FALSE)
+feeding1001_1500 <- read.csv("Article Coding Database (IDs_ 1001 - 1500) - Seasonal feeding data.csv",stringsAsFactors = FALSE)
+feeding1501_2000 <- read.csv("Article Coding Database (IDs_ 1501 - 2000) - Seasonal feeding data.csv",stringsAsFactors = FALSE)
+feeding2001_2500 <- read.csv("Article Coding Database (IDs_ 2001 - 2500) - Seasonal feeding data.csv",stringsAsFactors = FALSE)
+feeding2501_3000 <- read.csv("Article Coding Database (IDs_ 2501 - 3000) - Seasonal feeding data.csv",stringsAsFactors = FALSE)
+feeding3001_3500 <- read.csv("Article Coding Database (IDs_ 3001 - 3500) - Seasonal feeding data.csv",stringsAsFactors = FALSE)
+feeding3501_4000 <- read.csv("Article Coding Database (IDs_ 3501 - 4000) - Seasonal feeding data.csv",stringsAsFactors = FALSE)
+
+lumper		<- read.csv('Taxonomy Conversion - Lumper Taxonomy Conversion.csv', stringsAsFactors = FALSE)
+IUCN_tax		<- read.csv('Taxonomy Conversion - IUCN Taxonomy Conversion.csv', stringsAsFactors = FALSE)
+TenKTrees		<- read.csv('Taxonomy Conversion - 10K Trees Taxonomy Conversion.csv', stringsAsFactors = FALSE)
+
+colnames(feeding3501_4000) <- colnames(feeding3001_3500) <- colnames(feeding2501_3000) <- colnames(feeding1501_2000) <- colnames(feeding501_1000) <- colnames(feeding2001_2500) <- colnames(feeding1001_1500) <- colnames(feeding001_500)
+
+feedingAll	<- rbind(feeding001_500, feeding501_1000, feeding1001_1500, feeding1501_2000,
+                    feeding2001_2500, feeding2501_3000, feeding3001_3500, feeding3501_4000) 
+
+
+mergeddata_feeding <- merge(behaviorAll, feedingAll,
+                      by = intersect(names(behaviorAll), names(feedingAll)),
+                      by.behaviorAll = c("Article.ID", "Study.Site.ID", "Date.of.Coding", "Type.of.Data", "Names.of.group"), by.activityAll = c("X.9", "X.11", "X.3", "X.13", "X.14"), 
+                      all.behaviorAll = TRUE, all.activityAll = TRUE)
+
+
+mergeddata_feeding$SciName	<- ifelse(mergeddata_feeding$species == '' & mergeddata_feeding$subspecies == '', mergeddata_feeding$Genus,
+                               ifelse(mergeddata_feeding$subspecies == '', paste(mergeddata_feeding$Genus, '_', mergeddata_feeding$species, sep = ''),
+                                      paste(mergeddata_feeding$Genus, '_', mergeddata_feeding$species, '_', mergeddata_feeding$subspecies, sep = '')))
+
+
+mergeddata_feeding <- merge(mergeddata_feeding, lumper, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+mergeddata_feeding <- merge(mergeddata_feeding, IUCN_tax, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+mergeddata_feeding <- merge(mergeddata_feeding, TenKTrees, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+
+#% plant reproductive parts
+
+#%folivory
+
+
+#%insects
+
+#% fungi
 
 ##*Home range size
 ##**downloaded seasonal ranging data*
