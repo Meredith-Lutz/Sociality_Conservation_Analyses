@@ -62,10 +62,18 @@ social_organization <- aggregate(behaviorAll$Social.organization, by= list(behav
 #watch out for numerical vs categorical variables  
 
 #**Allomaternal care*
+###############################################################################################################
+###### want to include yes and no here (not not mentioned)so should be similar to the social learning one #####
+###############################################################################################################
 allomaternal_care <- aggregate(behaviorAll$Allomaternal.care, by= list(behaviorAll$sciName), FUN = length)
 
 #**social learning, only yes*
 #df[df$var1 == 'value', ]
+###############################################################################################################
+###### because you keep saving over the dataset when you subset it ############################################
+###### as we get further in your code you are using the subset instead of the whole thing #####################
+###### I would rename it in the next line and then use that new dataset in your aggregate #####################
+###############################################################################################################
 behaviorAll <- behaviorAll[behaviorAll$Social.learning == 'Yes',] #selecting only for "yes"
 social_learning <- aggregate(behaviorAll$Social.learning, by= list(behaviorAll$sciName), FUN = length)
 #need to change behaviorAll back to the original, otherwise I have less variables 
@@ -101,11 +109,9 @@ aggregare_individual <- aggregate(behaviorAll$Aggregateindividual, by= list(beha
 
 
 #**general mean/median/min/max*
-
-behaviorAll$Aggregategeneral <- ifelse(is.na(behaviorAll$Mean.adult.males) == TRUE & is.na(behaviorAll$Median.adult.males) == TRUE & is.na(behaviorAll$Min...adult.males) == TRUE & is.na(behaviorAll$Max...adult.males) ==TRUE & is.na(behaviorAll$Mean.adult.females) == TRUE & is.na(behaviorAll$Median.adult.females) == TRUE & is.na(behaviorAll$Min...adult.females) == TRUE & is.na(behaviorAll$Max...adult.females) ==TRUE &is.na(behaviorAll$Mean.individuals) == TRUE & is.na(behaviorAll$Median.individuals) == TRUE & is.na(behaviorAll$Min...of.individuals) == TRUE & is.na(behaviorAll$Max...of.individuals) ==TRUE, 0,))
-
-
-
+##############################################################################
+###### I fixed the error here, but make sure that the output makes sense #####
+##############################################################################
 behaviorAll$Aggregate_general <- ifelse(is.na(behaviorAll$Mean.individuals) == TRUE & is.na(behaviorAll$Mean.adult.females)== TRUE &is.na(behaviorAll$Mean.adult.males)== TRUE & is.na(behaviorAll$Median.individuals)== TRUE & is.na(behaviorAll$Median.adult.males)== TRUE & is.na(behaviorAll$Median.adult.females)== TRUE & is.na(behaviorAll$Min...of.individuals)== TRUE & is.na(behaviorAll$Min...adult.males)== TRUE & is.na(behaviorAll$Min...adult.females)== TRUE & is.na(behaviorAll$Max...of.individuals)== TRUE & is.na(behaviorAll$Max...adult.males)== TRUE & is.na(behaviorAll$Max...adult.females)== TRUE, 0,1)
 View(behaviorAll$Aggregate_general)
 table(behaviorAll$Aggregate_general)
@@ -134,15 +140,6 @@ aggregate_dispersalgeneral <- aggregate(behaviorAll$Aggregate_dispersal, by= lis
 #**HOW TO MERGE SEASONAL DATA WITH SPECIES ID COLUMN** -> need to merge sciname colum
 
 #**mergin g csv**
-library("dplyr")                                   
-library("plyr")                                     
-library("readr")
-
-
-
-library(dplyr)
-library(readr)
-
 merge(x, y, # Data frames or objects to be coerced
       by = intersect(names(x), names(y)), # Columns used for merging
       by.x = by, by.y = by, # Columns used for merging
@@ -165,35 +162,27 @@ activity3001_3500	<- read.csv('Article Coding Database (IDs_ 3001 - 3500) - Seas
 activity3501_4000	<- read.csv('Article Coding Database (IDs_ 3501 - 4000) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
 #*ran, it works 
 
-lumper		<- read.csv('Taxonomy Conversion - Lumper Taxonomy Conversion.csv', stringsAsFactors = FALSE)
-IUCN_tax		<- read.csv('Taxonomy Conversion - IUCN Taxonomy Conversion.csv', stringsAsFactors = FALSE)
-TenKTrees		<- read.csv('Taxonomy Conversion - 10K Trees Taxonomy Conversion.csv', stringsAsFactors = FALSE)
-
 colnames(activity3501_4000) <- colnames(activity3001_3500) <- colnames(activity2501_3000) <- colnames(activity1501_2000) <- colnames(activity501_1000) <- colnames(activity2001_2500) <- colnames(activity1001_1500) <- colnames(activity001_500)
 #it works
 
 activityAll	<- rbind(activity001_500, activity501_1000, activity1001_1500, activity1501_2000,
                      activity2001_2500, activity2501_3000, activity3001_3500, activity3501_4000) 
 
+###################################################################################################
+##### Here I switched the first and second data sets ##############################################
+#####(since we just want to add data onto each seasonal line instead of the other way around) #####
+###################################################################################################
+mergedActivity <- merge(activityAll, behaviorAll,
+				by.x = c("Article.ID", "Study.Site.ID", "Article.Initials", "Type.of.data", "Names.of.group"), 
+				by.y = c("Article.ID", "Study.Site.ID", "Coder.Initials", "Type.of.data", "Names.of.group"),
+				all.x = TRUE)
 
-
-mergeddata <- merge(behaviorAll, activityAll,
-                    by = intersect(names(behaviorAll), names(activityAll)),
-                    by.behaviorAll = c("Article.ID", "Study.Site.ID", "Date.of.Coding", "Type.of.Data", "Names.of.group"), by.activityAll = c("X.1", "X.2", "X.3", "X.4", "X.6"), 
-                    all.behaviorAll = TRUE)
-
-#WORKS
-
-mergeddata_1 <- merge(behaviorAll, activityAll,
-                    by = intersect(names(behaviorAll), names(activityAll)),
-                    by.behaviorAll = c("Article.ID", "Study.Site.ID", "Date.of.Coding", "Type.of.Data", "Names.of.group"), by.activityAll = c("X.1", "X.2", "X.3", "X.4", "X.6"), 
-                    all.behaviorAll = TRUE, all.activityAll = TRUE)
-View(mergeddata_1)
-
-
-mergeddata_1$SciName	<- ifelse(mergeddata_1$species == '' & mergeddata_1$subspecies == '', mergeddata_1$Genus,
-                              ifelse(mergeddata_1$subspecies == '', paste(mergeddata_1$Genus, '_', mergeddata_1$species, sep = ''),
-                                     paste(mergeddata_1$Genus, '_', mergeddata_1$species, '_', mergeddata_1$subspecies, sep = '')))
+#####################################################################################################################################
+#### There's a lot of places that didn't merge correctly, which we will have to deal with once the group name verifiers are done ####
+#####################################################################################################################################
+mergedActivity$sciName	<- ifelse(mergedActivity$species == '' & mergedActivity$subspecies == '', mergedActivity$Genus,
+                              ifelse(mergedActivity$subspecies == '', paste(mergedActivity$Genus, '_', mergedActivity$species, sep = ''),
+                                     paste(mergedActivity$Genus, '_', mergedActivity$species, '_', mergedActivity$subspecies, sep = '')))
 
 
 mergeddata_1			<- merge(mergeddata_1, lumper, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
@@ -248,11 +237,6 @@ mergeddata_1_submission <- aggregate(mergeddata_1$Rate.of.submission, list(merge
 ##**Feeding data 
 ##*feeding data:  a) specific data (plant reproductive parts, fungi, insect, foliage)
 
-setwd("C:/Users/arian/OneDrive/Desktop/PREdiCT")
-
-library(ape)
-
-
 feeding001_500 <- read.csv("Article Coding Database (IDs_ 001 - 500) - Seasonal feeding data.csv",stringsAsFactors = FALSE)
 feeding501_1000	<- read.csv("Article Coding Database (IDs_ 501 - 1000) - Seasonal feeding data.csv", stringsAsFactors = FALSE)
 feeding1001_1500 <- read.csv("Article Coding Database (IDs_ 1001 - 1500) - Seasonal feeding data.csv",stringsAsFactors = FALSE)
@@ -261,10 +245,6 @@ feeding2001_2500 <- read.csv("Article Coding Database (IDs_ 2001 - 2500) - Seaso
 feeding2501_3000 <- read.csv("Article Coding Database (IDs_ 2501 - 3000) - Seasonal feeding data.csv",stringsAsFactors = FALSE)
 feeding3001_3500 <- read.csv("Article Coding Database (IDs_ 3001 - 3500) - Seasonal feeding data.csv",stringsAsFactors = FALSE)
 feeding3501_4000 <- read.csv("Article Coding Database (IDs_ 3501 - 4000) - Seasonal feeding data.csv",stringsAsFactors = FALSE)
-
-lumper		<- read.csv('Taxonomy Conversion - Lumper Taxonomy Conversion.csv', stringsAsFactors = FALSE)
-IUCN_tax		<- read.csv('Taxonomy Conversion - IUCN Taxonomy Conversion.csv', stringsAsFactors = FALSE)
-TenKTrees		<- read.csv('Taxonomy Conversion - 10K Trees Taxonomy Conversion.csv', stringsAsFactors = FALSE)
 
 colnames(feeding3501_4000) <- colnames(feeding3001_3500) <- colnames(feeding2501_3000) <- colnames(feeding1501_2000) <- colnames(feeding501_1000) <- colnames(feeding2001_2500) <- colnames(feeding1001_1500) <- colnames(feeding001_500)
 
