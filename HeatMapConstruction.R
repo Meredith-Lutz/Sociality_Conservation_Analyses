@@ -61,11 +61,13 @@ social_organization <- aggregate(behaviorAll$Social.organization, by= list(behav
 #specific data per column use aggregate () as done above
 #watch out for numerical vs categorical variables  
 
-#**Allomaternal care*
+#**Allomaternal care, only yes*
 ###############################################################################################################
 ###### want to include yes and no here (not not mentioned)so should be similar to the social learning one #####
-###############################################################################################################
-allomaternal_care <- aggregate(behaviorAll$Allomaternal.care, by= list(behaviorAll$sciName), FUN = length)
+############################################################################################################### **corrected 2/28**
+behaviorAll_ac <- behaviorAll[behaviorAll$Allomaternal.care == 'Yes',]
+
+allomaternal_care <- aggregate(behaviorAll_ac$Allomaternal.care, by= list(behaviorAll_ac$sciName), FUN = length)
 
 #**social learning, only yes*
 #df[df$var1 == 'value', ]
@@ -73,14 +75,14 @@ allomaternal_care <- aggregate(behaviorAll$Allomaternal.care, by= list(behaviorA
 ###### because you keep saving over the dataset when you subset it ############################################
 ###### as we get further in your code you are using the subset instead of the whole thing #####################
 ###### I would rename it in the next line and then use that new dataset in your aggregate #####################
-###############################################################################################################
-behaviorAll <- behaviorAll[behaviorAll$Social.learning == 'Yes',] #selecting only for "yes"
-social_learning <- aggregate(behaviorAll$Social.learning, by= list(behaviorAll$sciName), FUN = length)
-#need to change behaviorAll back to the original, otherwise I have less variables 
+############################################################################################################### *corrected 2/28**
+behaviorAll_sl <- behaviorAll[behaviorAll$Social.learning == 'Yes',] #selecting only for "yes"
+social_learning <- aggregate(behaviorAll_sl$Social.learning, by= list(behaviorAll_sl$sciName), FUN = length)
+
 
 #**Intergroup encounter study*
-behaviorAll <- behaviorAll[behaviorAll$Intergroup.encounter.study. == 'Yes',] #selecting only for "yes"
-intergroup_encounter_study <- aggregate(behaviorAll$Intergroup.encounter.study., by= list(behaviorAll$sciName), FUN = length)
+behaviorAll_igs <- behaviorAll[behaviorAll$Intergroup.encounter.study. == 'Yes',] #selecting only for "yes"
+intergroup_encounter_study <- aggregate(behaviorAll_igs$Intergroup.encounter.study., by= list(behaviorAll_igs$sciName), FUN = length)
 
 
 #**mean/median/min/max_adult_males* 
@@ -89,7 +91,7 @@ behaviorAll$Aggregatemale <- ifelse(is.na(behaviorAll$Mean.adult.males) == TRUE 
 #1 has at least 1 of the variables
                                    
 table(behaviorAll$Aggregatemale) 
-aggregare_male <- aggregate(behaviorAll$Aggregatemale, by= list(behaviorAll$sciName), FUN = sum)
+aggregate_male <- aggregate(behaviorAll$Aggregatemale, by= list(behaviorAll$sciName), FUN = sum)
 
 
 #For general is.na == TRUE for all male, females, individual (12 totals:mean, max, median, min)
@@ -99,13 +101,13 @@ aggregare_male <- aggregate(behaviorAll$Aggregatemale, by= list(behaviorAll$sciN
 #**mean/median/min/max_adult_females*
 behaviorAll$Aggregatefemale <- ifelse(is.na(behaviorAll$Mean.adult.females) == TRUE & is.na(behaviorAll$Median.adult.females) == TRUE & is.na(behaviorAll$Min...adult.females) == TRUE & is.na(behaviorAll$Max...adult.females) ==TRUE, 0,1)
 table(behaviorAll$Aggregatefemale)
-aggregare_female <- aggregate(behaviorAll$Aggregatefemale, by= list(behaviorAll$sciName), FUN = sum)
+aggregate_female <- aggregate(behaviorAll$Aggregatefemale, by= list(behaviorAll$sciName), FUN = sum)
 
 
 #**mean/median/min/max_individuals*
 behaviorAll$Aggregateindividual <- ifelse(is.na(behaviorAll$Mean.individuals) == TRUE & is.na(behaviorAll$Median.individuals) == TRUE & is.na(behaviorAll$Min...of.individuals) == TRUE & is.na(behaviorAll$Max...of.individuals) ==TRUE, 0,1)
 table(behaviorAll$Aggregateindividual)
-aggregare_individual <- aggregate(behaviorAll$Aggregateindividual, by= list(behaviorAll$sciName), FUN = sum)
+aggregate_individual <- aggregate(behaviorAll$Aggregateindividual, by= list(behaviorAll$sciName), FUN = sum)
 
 
 #**general mean/median/min/max*
@@ -137,9 +139,7 @@ behaviorAll$Aggregate_dispersal <- ifelse(is.na(behaviorAll$Female.dispersal) ==
 aggregate_dispersalgeneral <- aggregate(behaviorAll$Aggregate_dispersal, by= list(behaviorAll$sciName), FUN = sum)
 
 
-#**HOW TO MERGE SEASONAL DATA WITH SPECIES ID COLUMN** -> need to merge sciname colum
-
-#**mergin g csv**
+#**merging csv**
 merge(x, y, # Data frames or objects to be coerced
       by = intersect(names(x), names(y)), # Columns used for merging
       by.x = by, by.y = by, # Columns used for merging
@@ -152,6 +152,7 @@ merge(x, y, # Data frames or objects to be coerced
       ...) # Additional arguments
 
 ##*Activity budget
+##*redownloaded 
 activity001_500	<- read.csv('Article Coding Database (IDs_ 001 - 500) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
 activity501_1000	<- read.csv('Article Coding Database (IDs_ 501 - 1000) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
 activity1001_1500	<- read.csv('Article Coding Database (IDs_ 1001 - 1500) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
@@ -168,14 +169,17 @@ colnames(activity3501_4000) <- colnames(activity3001_3500) <- colnames(activity2
 activityAll	<- rbind(activity001_500, activity501_1000, activity1001_1500, activity1501_2000,
                      activity2001_2500, activity2501_3000, activity3001_3500, activity3501_4000) 
 
+View(activityAll)
 ###################################################################################################
 ##### Here I switched the first and second data sets ##############################################
 #####(since we just want to add data onto each seasonal line instead of the other way around) #####
 ###################################################################################################
+
 mergedActivity <- merge(activityAll, behaviorAll,
 				by.x = c("Article.ID", "Study.Site.ID", "Article.Initials", "Type.of.data", "Names.of.group"), 
 				by.y = c("Article.ID", "Study.Site.ID", "Coder.Initials", "Type.of.data", "Names.of.group"),
 				all.x = TRUE)
+###** 
 
 #####################################################################################################################################
 #### There's a lot of places that didn't merge correctly, which we will have to deal with once the group name verifiers are done ####
@@ -185,54 +189,52 @@ mergedActivity$sciName	<- ifelse(mergedActivity$species == '' & mergedActivity$s
                                      paste(mergedActivity$Genus, '_', mergedActivity$species, '_', mergedActivity$subspecies, sep = '')))
 
 
-mergeddata_1			<- merge(mergeddata_1, lumper, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
-mergeddata_1			<- merge(mergeddata_1, IUCN_tax, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
-mergeddata_1			<- merge(mergeddata_1, TenKTrees, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+mergedActivity			<- merge(mergedActivity, lumper, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+mergedActivity			<- merge(mergedActivity, IUCN_tax, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+mergedActivity			<- merge(mergedActivity, TenKTrees, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
 #warning message
 
+View(mergedActivity)
 
 ##*activity budget:  a) % social b) % grooming c) % feeding d) rate of aggresstion  e) submission
 ##*a) % social
-##*% time social in table as "X..time.social"
+##*% time social in table as "X..time.social" --> 2/28 works
+mergedActivity$X..time.social <- ifelse(is.na(mergedActivity$X..time.social.x) == TRUE & is.na(mergedActivity$X..time.social.y) == TRUE, 0,1)
 
-#maybe need to do ifelse to gather data with names?
+mergedActivity_social <- aggregate(mergedActivity$X..time.social, list(mergedActivity$sciName), FUN = sum)
 
-activityAll$Aggregate_all <- ifelse(is.na(activityAll$X.10) == TRUE & is.na(activityAll$X.12)== TRUE &is.na(activityAll$X.14)== TRUE & is.na(activityAll$X.16)== TRUE & is.na(activityAll$Activity.Budget.Data)== TRUE, 0,1)
+#percent_feeding --> 2/28 works
+mergedActivity$X..time.feeding <- ifelse(is.na(mergedActivity$X..time.feeding.x) == TRUE & is.na(mergedActivity$X..time.feeding.y) == TRUE, 0,1)
 
-mergeddata_1$Aggregate_all <- ifelse(is.na(mergeddata_1$X..time.feeding) == TRUE & is.na(mergeddata_1$X..time.grooming) == TRUE & is.na(mergeddata_1$X..time.social) == TRUE & is.na(mergeddata_1$Rate.of.aggression) == TRUE & is.na(mergeddata_1$Rate.of.submission) == TRUE, 0 ,1)
+mergedActivity_feeding <- aggregate(mergedActivity$X..time.feeding, list(mergedActivity$sciName), FUN = sum)
 
-mergeddata_1$X..time.social <- ifelse(is.na(mergeddata_1$X..time.social) == TRUE, 0, 1)
+#percent_grooming --> 2/28 works
+mergedActivity$X..time.grooming <- ifelse(is.na(mergedActivity$X..time.grooming.x) == TRUE & is.na(mergedActivity$X..time.grooming.y) == TRUE, 0,1)
 
-mergeddata_1_social <- aggregate(mergeddata_1$X..time.social, list(mergeddata_1$sciName), FUN = length) #different results using FUN = sum
-#* unsure which FUN to use 
-#* prior to carry out ifelse option -- #error: Error in aggregate.data.frame(as.data.frame(x), ...) : arguments must have same length
-#* now error seems resolved 
-#* unsure if this is the right step
+mergedActivity_grooming <- aggregate(mergedActivity$X..time.grooming, list(mergedActivity$sciName), FUN = sum)
 
-table(mergeddata_1_social)
 
-#percent_feeding
-mergeddata_1$X..time.feeding <- ifelse(is.na(mergeddata_1$X..time.feeding) == TRUE, 0, 1)
+#rate_aggression --> 2/28 works
+mergedActivity$Rate.of.aggression <- ifelse(is.na(mergedActivity$Rate.of.aggression.x) == TRUE & is.na(mergedActivity$Rate.of.aggression.y) == TRUE, 0,1)
 
-mergeddata_1_feeding <- aggregate(mergeddata_1$X..time.feeding, list(mergeddata_1$sciName), FUN = length)
+mergedActivity_aggression <- aggregate(mergedActivity$Rate.of.aggression, list(mergedActivity$sciName), FUN = sum)
 
-#percent_grooming
+#rate_submission --> 2/28 works
+mergedActivity$Rate.of.submission <- ifelse(is.na(mergedActivity$Rate.of.submission.x) == TRUE & is.na(mergedActivity$Rate.of.submission.y) == TRUE, 0,1)
 
-mergeddata_1$X..time.grooming <- ifelse(is.na(mergeddata_1$X..time.grooming) == TRUE, 0, 1)
+mergedActivity_submission <- aggregate(mergedActivity$Rate.of.submission, list(mergedActivity$sciName), FUN = sum)
 
-mergeddata_1_grooming <- aggregate(mergeddata_1$X..time.grooming, list(mergeddata_1$sciName), FUN = length)
+############################################################################################################
+############################################################################################################
+2/28 #**notes on FUN**#
+#* by using FUN = length, results vary in number 1 to >50 approx
+#* by using FUN = sum, results still present numbers between 1-50 but many 0s --> should I move forward with selecting
+#* only those species with actual numbers and disregard the species with 0s -- code similar to select "yes" in 
+#* previous examples
+#############################################################################################################
+#############################################################################################################
 
-#rate_aggression
 
-mergeddata_1$Rate.of.aggression <- ifelse(is.na(mergeddata_1$Rate.of.aggression) == TRUE, 0, 1)
-
-mergeddata_1_aggression <- aggregate(mergeddata_1$Rate.of.aggression, list(mergeddata_1$sciName), FUN = length)
-
-#rate_submission
-
-mergeddata_1$Rate.of.submission <- ifelse(is.na(mergeddata_1$Rate.of.submission) == TRUE, 0, 1)
-
-mergeddata_1_submission <- aggregate(mergeddata_1$Rate.of.submission, list(mergeddata_1$sciName), FUN = length)
 
 ##**Feeding data 
 ##*feeding data:  a) specific data (plant reproductive parts, fungi, insect, foliage)
@@ -251,30 +253,40 @@ colnames(feeding3501_4000) <- colnames(feeding3001_3500) <- colnames(feeding2501
 feedingAll	<- rbind(feeding001_500, feeding501_1000, feeding1001_1500, feeding1501_2000,
                     feeding2001_2500, feeding2501_3000, feeding3001_3500, feeding3501_4000) 
 
+mergedFeeding <- merge(feedingAll, behaviorAll,
+                        by.x = c("Article.ID", "Study.Site.ID", "Article.Initials", "Type.of.data", "Names.of.group"), 
+                        by.y = c("Article.ID", "Study.Site.ID", "Coder.Initials", "Type.of.data", "Names.of.group"),
+                        all.x = TRUE)
 
-mergeddata_feeding <- merge(behaviorAll, feedingAll,
-                      by = intersect(names(behaviorAll), names(feedingAll)),
-                      by.behaviorAll = c("Article.ID", "Study.Site.ID", "Date.of.Coding", "Type.of.Data", "Names.of.group"), by.activityAll = c("X.9", "X.11", "X.3", "X.13", "X.14"), 
-                      all.behaviorAll = TRUE, all.activityAll = TRUE)
-
-
-mergeddata_feeding$SciName	<- ifelse(mergeddata_feeding$species == '' & mergeddata_feeding$subspecies == '', mergeddata_feeding$Genus,
-                               ifelse(mergeddata_feeding$subspecies == '', paste(mergeddata_feeding$Genus, '_', mergeddata_feeding$species, sep = ''),
-                                      paste(mergeddata_feeding$Genus, '_', mergeddata_feeding$species, '_', mergeddata_feeding$subspecies, sep = '')))
+mergedFeeding$sciName	<- ifelse(mergedFeeding$species == '' & mergedFeeding$subspecies == '', mergedFeeding$Genus,
+                                 ifelse(mergedFeeding$subspecies == '', paste(mergedFeeding$Genus, '_', mergedFeeding$species, sep = ''),
+                                        paste(mergedFeeding$Genus, '_', mergedFeeding$species, '_', mergedFeeding$subspecies, sep = '')))
 
 
-mergeddata_feeding <- merge(mergeddata_feeding, lumper, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
-mergeddata_feeding <- merge(mergeddata_feeding, IUCN_tax, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
-mergeddata_feeding <- merge(mergeddata_feeding, TenKTrees, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+mergedFeeding			<- merge(mergedFeeding, lumper, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+mergedFeeding			<- merge(mergedFeeding, IUCN_tax, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+mergedFeeding			<- merge(mergedFeeding, TenKTrees, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
 
 #% plant reproductive parts
+mergedFeeding$X..plant.reproductive.parts <- ifelse(is.na(mergedFeeding$X..plant.reproductive.parts.x) == TRUE & is.na(mergedFeeding$X..plant.reproductive.parts.y) == TRUE, 0,1)
+
+mergedFeeding_prp <- aggregate(mergedFeeding$X..plant.reproductive.parts, list(mergedFeeding$sciName), FUN = sum)
 
 #%folivory
+mergedFeeding$X..folivory <- ifelse(is.na(mergedFeeding$X..folivory.x) == TRUE & is.na(mergedFeeding$X..folivory.y) == TRUE, 0,1)
 
+mergedFeeding_fol <- aggregate(mergedFeeding$X..folivory, list(mergedFeeding$sciName), FUN = sum)
 
 #%insects
+mergedFeeding$X..insects <- ifelse(is.na(mergedFeeding$X..insects.x) == TRUE & is.na(mergedFeeding$X..insects.y) == TRUE, 0,1)
+
+mergedFeeding_insects <- aggregate(mergedFeeding$X..insects, list(mergedFeeding$sciName), FUN = sum)
 
 #% fungi
+mergedFeeding$X..fungus <- ifelse(is.na(mergedFeeding$X..fungus.x) == TRUE & is.na(mergedFeeding$X..fungus.y) == TRUE, 0,1)
+
+mergedFeeding_fungus <- aggregate(mergedFeeding$X..fungus, list(mergedFeeding$sciName), FUN = sum)
+
 
 ##*Home range size
 ##**downloaded seasonal ranging data*
