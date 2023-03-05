@@ -291,17 +291,37 @@ mergedFeeding_fungus <- aggregate(mergedFeeding$X..fungus, list(mergedFeeding$sc
 ##*Home range size
 ##**downloaded seasonal ranging data*
 
-homerange001_500	<- read.csv('Article Coding Database (IDs_ 001 - 500) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
-homerange501_1000	<- read.csv('Article Coding Database (IDs_ 501 - 1000) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
-homerange1001_1500	<- read.csv('Article Coding Database (IDs_ 1001 - 1500) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
-homerange1501_2000	<- read.csv('Article Coding Database (IDs_ 1501 - 2000) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
-homerange2001_2500	<- read.csv('Article Coding Database (IDs_ 2001 - 2500) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
-homerange2501_3000	<- read.csv('Article Coding Database (IDs_ 2501 - 3000) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
-homerange3001_3500	<- read.csv('Article Coding Database (IDs_ 3001 - 3500) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
-homerange3501_4000	<- read.csv('Article Coding Database (IDs_ 3501 - 4000) - Seasonal ranging data.csv', stringsAsFactors = FALSE)
+setwd("C:/Users/arian/OneDrive/Desktop/PREdiCT")
+
+homerange001_500 <- read.csv("Article Coding Database (IDs_ 001 - 500) - Seasonal ranging data.csv", stringsAsFactors = FALSE)
+homerange501_1000 <- read.csv("Article Coding Database (IDs_ 501 - 1000) - Seasonal ranging data.csv", stringsAsFactors = FALSE)
+homerange1001_1500 <- read.csv("Article Coding Database (IDs_ 1001 - 1500) - Seasonal ranging data.csv", stringsAsFactors = FALSE)
+homerange1501_2000 <- read.csv("Article Coding Database (IDs_ 1501 - 2000) - Seasonal ranging data.csv", stringsAsFactors = FALSE)
+homerange2001_2500 <- read.csv("Article Coding Database (IDs_ 2001 - 2500) - Seasonal ranging data.csv", stringsAsFactors = FALSE)
+homerange2501_3000 <- read.csv("Article Coding Database (IDs_ 2501 - 3000) - Seasonal ranging data.csv", stringsAsFactors = FALSE)
+homerange3001_3500 <- read.csv("Article Coding Database (IDs_ 3001 - 3500) - Seasonal ranging data (1).csv", stringsAsFactors = FALSE)
+homerange3501_4000 <- read.csv("Article Coding Database (IDs_ 3501 - 4000) - Seasonal ranging data.csv", stringsAsFactors = FALSE)
+
+colnames(homerange3501_4000) <- colnames(homerange3001_3500) <- colnames(homerange2501_3000) <- colnames(homerange1501_2000) <- colnames(homerange501_1000) <- colnames(homerange2001_2500) <- colnames(homerange1001_1500) <- colnames(homerange001_500)
+
+homerangeAll	<- rbind(homerange001_500, homerange501_1000, homerange1001_1500, homerange1501_2000,
+                      homerange2001_2500, homerange2501_3000, homerange3001_3500, homerange3501_4000) 
+
+mergedRange <- merge(homerangeAll, behaviorAll,
+                       by.x = c("Article.ID", "Study.Site.ID", "Article.Initials", "Type.of.data", "Names.of.group"), 
+                       by.y = c("Article.ID", "Study.Site.ID", "Coder.Initials", "Type.of.data", "Names.of.group"),
+                       all.x = TRUE)
+
+mergedRange$sciName	<- ifelse(mergedRange$species == '' & mergedRange$subspecies == '', mergedRange$Genus,
+                                ifelse(mergedRange$subspecies == '', paste(mergedRange$Genus, '_', mergedRange$species, sep = ''),
+                                       paste(mergedRange$Genus, '_', mergedRange$species, '_', mergedRange$subspecies, sep = '')))
 
 
+mergedRange			<- merge(mergedRange, lumper, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+mergedRange			<- merge(mergedRange, IUCN_tax, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+mergedRange			<- merge(mergedRange, TenKTrees, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
 
-
+aggregate_homerange <- aggregate(homerangeAll$Home.range.size..ha., by= list(behaviorAll$sciName), FUN = length)
+#error:  Error in aggregate.data.frame(as.data.frame(x), ...) : arguments must have same length
 
     
