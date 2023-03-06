@@ -324,4 +324,14 @@ mergedRange			<- merge(mergedRange, TenKTrees, by.x = 'sciName', by.y = 'Mendele
 aggregate_homerange <- aggregate(homerangeAll$Home.range.size..ha., by= list(behaviorAll$sciName), FUN = length)
 #error:  Error in aggregate.data.frame(as.data.frame(x), ...) : arguments must have same length
 
-    
+mergedRange$Home.range.size..ha.. <- ifelse(is.na(mergedRange$Home.range.size..ha..x) == TRUE & is.na(mergedRange$Home.range.overlap..y) == TRUE, 0,1)
+mergedRange_size <- aggregate(mergedRange$Home.range.size..ha.., list(mergedRange$sciName), FUN = sum)
+
+mergedRange$Home.range.overlap.. <- ifelse(is.na(mergedRange$Home.range.overlap..x) == TRUE & is.na(mergedRange$Home.range.overlap..y) == TRUE, 0,1)
+mergedRange_overlap <- aggregate(mergedRange$Home.range.overlap.., list(mergedRange$sciName), FUN = sum)
+#####**If overlap needed I may need to select for yes as follow*
+
+mergedRange_overlap <- homerangeAll[homerangeAll$Home.range.overlap. == 'Yes',] #selecting only for "yes"
+mergedRange_overlap <- aggregate(mergedRange$Home.range.overlap.., list(mergedRange$sciName), FUN = sum)
+
+
