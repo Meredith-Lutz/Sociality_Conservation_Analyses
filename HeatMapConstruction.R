@@ -321,9 +321,6 @@ mergedRange			<- merge(mergedRange, lumper, by.x = 'sciName', by.y = 'Mendeley.t
 mergedRange			<- merge(mergedRange, IUCN_tax, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
 mergedRange			<- merge(mergedRange, TenKTrees, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
 
-aggregate_homerange <- aggregate(homerangeAll$Home.range.size..ha., by= list(behaviorAll$sciName), FUN = length)
-#error:  Error in aggregate.data.frame(as.data.frame(x), ...) : arguments must have same length
-
 mergedRange$Home.range.size..ha.. <- ifelse(is.na(mergedRange$Home.range.size..ha..x) == TRUE & is.na(mergedRange$Home.range.overlap..y) == TRUE, 0,1)
 mergedRange_size <- aggregate(mergedRange$Home.range.size..ha.., list(mergedRange$sciName), FUN = sum)
 
@@ -334,4 +331,52 @@ mergedRange_overlap <- aggregate(mergedRange$Home.range.overlap.., list(mergedRa
 mergedRange_overlap <- homerangeAll[homerangeAll$Home.range.overlap. == 'Yes',] #selecting only for "yes"
 mergedRange_overlap <- aggregate(mergedRange$Home.range.overlap.., list(mergedRange$sciName), FUN = sum)
 
+
+########################################################################################################################################
+##### HEAT MAP ##### https://r-graph-gallery.com/215-the-heatmap-function.html
+
+behavior_list <- list(allomaternal_care, social_learning, social_organization, intergroup_encounter_study, aggregate_malesec_dispersal, aggregate_male_dispersal, aggregate_male, aggregate_individual, aggregate_general, aggregate_femsec_dispersal, aggregate_female, aggregate_fem_dispersal, aggregate_dispersalgeneral)
+activty_list <- list(mergedActivity_aggression, mergedActivity_feeding, mergedActivity_grooming, mergedActivity_social, mergedActivity_submission)
+feeding_list <- list(mergedFeeding_fol, mergedFeeding_fungus, mergedFeeding_insects, mergedFeeding_prp)
+homerange_list <- list(mergedRange_overlap, mergedRange_size)
+###not a table -- possibly explains why other functions have errors  
+
+datamerged <- merge(behavior_list, activty_list, feeding_list, homerange_list, by = "id") #error
+
+datamerged_1 <- merge(behavior_list, activty_list, by = "id", all.x = TRUE) #error
+
+dataframes_all <- cbind(behavior_list, activty_list, feeding_list, homerange_list) #error 
+
+dataframes_all <- cbind(allomaternal_care, social_learning, social_organization, intergroup_encounter_study, aggregate_malesec_dispersal, aggregate_male_dispersal, aggregate_male, aggregate_individual, aggregate_general, aggregate_femsec_dispersal, aggregate_female, aggregate_fem_dispersal, aggregate_dispersalgeneral, mergedActivity_aggression, mergedActivity_feeding, mergedActivity_grooming, mergedActivity_social, mergedActivity_submission, mergedFeeding_fol, mergedFeeding_fungus, mergedFeeding_insects, mergedFeeding_prp, mergedRange_overlap, mergedRange_size)
+#ERROR
+
+
+all_df <- cbind(mergedActivity, mergedRange) ##different dfs, errors seems to be the same: differing #of rows
+all_activity <- 
+all_feeding <- 
+all_homerange <-
+
+#Takes a sequence of vector, matrix or data-frame arguments and combines them by columns
+  bind_cols(df1, df2)
+
+
+library(dplyr)
+all_df <- bind_cols(allomaternal_care, social_learning, social_organization, intergroup_encounter_study, aggregate_malesec_dispersal, aggregate_male_dispersal, aggregate_male, aggregate_individual, aggregate_general, aggregate_femsec_dispersal, aggregate_female, aggregate_fem_dispersal, aggregate_dispersalgeneral, mergedActivity_aggression, mergedActivity_feeding, mergedActivity_grooming, mergedActivity_social, mergedActivity_submission, mergedFeeding_fol, mergedFeeding_fungus, mergedFeeding_insects, mergedFeeding_prp, mergedRange_overlap, mergedRange_size)
+##getting somehwere --> Error in `bind_cols()`:
+! Can't recycle `..1` (size 100) to match `..2` (size 25).
+Run `rlang::last_error()` to see where the error occurred.' 
+
+all_df <- bind_cols(list(behavior_list, activty_list))
+dplyr::bind_cols(list(behavior_list, activty_list))
+vctrs::vec_cbind(!!!dots, .name_repair = .name_repair)
+
+
+mergedRange$sciName	<- ifelse(mergedRange$species == '' & mergedRange$subspecies == '', mergedRange$Genus,
+                              ifelse(mergedRange$subspecies == '', paste(mergedRange$Genus, '_', mergedRange$species, sep = ''),
+                                     paste(mergedRange$Genus, '_', mergedRange$species, '_', mergedRange$subspecies, sep = '')))
+
+
+mergedRange			<- merge(mergedRange, lumper, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+mergedRange			<- merge(mergedRange, IUCN_tax, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
+mergedRange			<- merge(mergedRange, TenKTrees, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
 
