@@ -81,6 +81,7 @@ social_learning <- aggregate(behaviorAll_sl$Social.learning, by= list(behaviorAl
 
 
 #**Intergroup encounter study*
+
 behaviorAll_igs <- behaviorAll[behaviorAll$Intergroup.encounter.study. == 'Yes',] #selecting only for "yes"
 intergroup_encounter_study <- aggregate(behaviorAll_igs$Intergroup.encounter.study., by= list(behaviorAll_igs$sciName), FUN = length)
 
@@ -161,14 +162,11 @@ activity2001_2500	<- read.csv('Article Coding Database (IDs_ 2001 - 2500) - Seas
 activity2501_3000	<- read.csv('Article Coding Database (IDs_ 2501 - 3000) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
 activity3001_3500	<- read.csv('Article Coding Database (IDs_ 3001 - 3500) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
 activity3501_4000	<- read.csv('Article Coding Database (IDs_ 3501 - 4000) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
-#*ran, it works 
 
 colnames(activity3501_4000) <- colnames(activity3001_3500) <- colnames(activity2501_3000) <- colnames(activity1501_2000) <- colnames(activity501_1000) <- colnames(activity2001_2500) <- colnames(activity1001_1500) <- colnames(activity001_500)
-#it works
 
 activityAll	<- rbind(activity001_500, activity501_1000, activity1001_1500, activity1501_2000,
                      activity2001_2500, activity2501_3000, activity3001_3500, activity3501_4000) 
-
 View(activityAll)
 ###################################################################################################
 ##### Here I switched the first and second data sets ##############################################
@@ -179,7 +177,7 @@ mergedActivity <- merge(activityAll, behaviorAll,
 				by.x = c("Article.ID", "Study.Site.ID", "Article.Initials", "Type.of.data", "Names.of.group"), 
 				by.y = c("Article.ID", "Study.Site.ID", "Coder.Initials", "Type.of.data", "Names.of.group"),
 				all.x = TRUE)
-###** 
+
 
 #####################################################################################################################################
 #### There's a lot of places that didn't merge correctly, which we will have to deal with once the group name verifiers are done ####
@@ -192,7 +190,7 @@ mergedActivity$sciName	<- ifelse(mergedActivity$species == '' & mergedActivity$s
 mergedActivity			<- merge(mergedActivity, lumper, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
 mergedActivity			<- merge(mergedActivity, IUCN_tax, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
 mergedActivity			<- merge(mergedActivity, TenKTrees, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
-#warning message
+
 
 View(mergedActivity)
 
@@ -220,6 +218,7 @@ mergedActivity$Rate.of.aggression <- ifelse(is.na(mergedActivity$Rate.of.aggress
 mergedActivity_aggression <- aggregate(mergedActivity$Rate.of.aggression, list(mergedActivity$sciName), FUN = sum)
 
 #rate_submission --> 2/28 works
+
 mergedActivity$Rate.of.submission <- ifelse(is.na(mergedActivity$Rate.of.submission.x) == TRUE & is.na(mergedActivity$Rate.of.submission.y) == TRUE, 0,1)
 
 mergedActivity_submission <- aggregate(mergedActivity$Rate.of.submission, list(mergedActivity$sciName), FUN = sum)
@@ -370,13 +369,11 @@ all_df <- bind_cols(list(behavior_list, activty_list))
 dplyr::bind_cols(list(behavior_list, activty_list))
 vctrs::vec_cbind(!!!dots, .name_repair = .name_repair)
 
-
-mergedRange$sciName	<- ifelse(mergedRange$species == '' & mergedRange$subspecies == '', mergedRange$Genus,
-                              ifelse(mergedRange$subspecies == '', paste(mergedRange$Genus, '_', mergedRange$species, sep = ''),
-                                     paste(mergedRange$Genus, '_', mergedRange$species, '_', mergedRange$subspecies, sep = '')))
+###Seems as the amount of rows needs to be equal across each df to merge df together
+df_merged <- merge(mergedActivity, mergedRange, all.x = T) ##error
 
 
-mergedRange			<- merge(mergedRange, lumper, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
-mergedRange			<- merge(mergedRange, IUCN_tax, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
-mergedRange			<- merge(mergedRange, TenKTrees, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
-
+merged_1a <- merge(mergedActivity, mergedRange,
+                     by.x = c("Article.ID", "Study.Site.ID", "Article.Initials", "Type.of.data", "Names.of.group"), 
+                     by.y = c("Article.ID""Study.Site.ID", "Coder.Initials", "Type.of.data", "Names.of.group"),
+                     all.x = TRUE) #error 
