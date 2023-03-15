@@ -55,27 +55,11 @@ social_organization <- aggregate(behaviorAll$Social.organization, by= list(behav
 #group 1 = species 
 #x = # of line we have for that species that are not blank
 
-#for combined variable, create a new variable if/else, 
-#if the first isn't blank then, if it is blank then move forward 
-#until you find a blank, if all of them call the variable 0 (1 = has values) -> general column for 
-#specific data per column use aggregate () as done above
-#watch out for numerical vs categorical variables  
-
 #**Allomaternal care, only yes*
-###############################################################################################################
-###### want to include yes and no here (not not mentioned)so should be similar to the social learning one #####
-############################################################################################################### **corrected 2/28**
 behaviorAll_ac <- behaviorAll[behaviorAll$Allomaternal.care == 'Yes',]
-
 allomaternal_care <- aggregate(behaviorAll_ac$Allomaternal.care, by= list(behaviorAll_ac$sciName), FUN = length)
 
 #**social learning, only yes*
-#df[df$var1 == 'value', ]
-###############################################################################################################
-###### because you keep saving over the dataset when you subset it ############################################
-###### as we get further in your code you are using the subset instead of the whole thing #####################
-###### I would rename it in the next line and then use that new dataset in your aggregate #####################
-############################################################################################################### *corrected 2/28**
 behaviorAll_sl <- behaviorAll[behaviorAll$Social.learning == 'Yes',] #selecting only for "yes"
 social_learning <- aggregate(behaviorAll_sl$Social.learning, by= list(behaviorAll_sl$sciName), FUN = length)
 
@@ -101,24 +85,16 @@ aggregate_male <- aggregate(behaviorAll$Aggregatemale, by= list(behaviorAll$sciN
 
 #**mean/median/min/max_adult_females*
 behaviorAll$Aggregatefemale <- ifelse(is.na(behaviorAll$Mean.adult.females) == TRUE & is.na(behaviorAll$Median.adult.females) == TRUE & is.na(behaviorAll$Min...adult.females) == TRUE & is.na(behaviorAll$Max...adult.females) ==TRUE, 0,1)
-table(behaviorAll$Aggregatefemale)
 aggregate_female <- aggregate(behaviorAll$Aggregatefemale, by= list(behaviorAll$sciName), FUN = sum)
 
 
 #**mean/median/min/max_individuals*
 behaviorAll$Aggregateindividual <- ifelse(is.na(behaviorAll$Mean.individuals) == TRUE & is.na(behaviorAll$Median.individuals) == TRUE & is.na(behaviorAll$Min...of.individuals) == TRUE & is.na(behaviorAll$Max...of.individuals) ==TRUE, 0,1)
-table(behaviorAll$Aggregateindividual)
 aggregate_individual <- aggregate(behaviorAll$Aggregateindividual, by= list(behaviorAll$sciName), FUN = sum)
 
 
 #**general mean/median/min/max*
-##############################################################################
-###### I fixed the error here, but make sure that the output makes sense #####
-##############################################################################
 behaviorAll$Aggregate_general <- ifelse(is.na(behaviorAll$Mean.individuals) == TRUE & is.na(behaviorAll$Mean.adult.females)== TRUE &is.na(behaviorAll$Mean.adult.males)== TRUE & is.na(behaviorAll$Median.individuals)== TRUE & is.na(behaviorAll$Median.adult.males)== TRUE & is.na(behaviorAll$Median.adult.females)== TRUE & is.na(behaviorAll$Min...of.individuals)== TRUE & is.na(behaviorAll$Min...adult.males)== TRUE & is.na(behaviorAll$Min...adult.females)== TRUE & is.na(behaviorAll$Max...of.individuals)== TRUE & is.na(behaviorAll$Max...adult.males)== TRUE & is.na(behaviorAll$Max...adult.females)== TRUE, 0,1)
-View(behaviorAll$Aggregate_general)
-table(behaviorAll$Aggregate_general)
-
 aggregate_general <- aggregate(behaviorAll$Aggregate_general, by= list(behaviorAll$sciName), FUN = sum)
                                        
 #**Dispersal*
@@ -134,7 +110,6 @@ aggregate_male_dispersal <- aggregate(behaviorAll$Aggregatemale_dispersal, by= l
 
 behaviorAll$Aggregatemalesec_dispersal <- ifelse(is.na(behaviorAll$Male.secondary.dispersal) == TRUE, 1,0)
 aggregate_malesec_dispersal <- aggregate(behaviorAll$Aggregatemalesec_dispersal, by= list(behaviorAll$sciName), FUN = sum)  
-
 
 behaviorAll$Aggregate_dispersal <- ifelse(is.na(behaviorAll$Female.dispersal) == TRUE & is.na(behaviorAll$Female.secondary.dispersal) == TRUE & is.na(behaviorAll$Male.dispersal) == TRUE & is.na(behaviorAll$Male.secondary.dispersal) == TRUE, 0, 1)
 aggregate_dispersalgeneral <- aggregate(behaviorAll$Aggregate_dispersal, by= list(behaviorAll$sciName), FUN = sum)
@@ -153,7 +128,7 @@ merge(x, y, # Data frames or objects to be coerced
       ...) # Additional arguments
 
 ##*Activity budget
-##*redownloaded 
+
 activity001_500	<- read.csv('Article Coding Database (IDs_ 001 - 500) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
 activity501_1000	<- read.csv('Article Coding Database (IDs_ 501 - 1000) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
 activity1001_1500	<- read.csv('Article Coding Database (IDs_ 1001 - 1500) - Seasonal activity budget data.csv', stringsAsFactors = FALSE)
@@ -167,17 +142,11 @@ colnames(activity3501_4000) <- colnames(activity3001_3500) <- colnames(activity2
 
 activityAll	<- rbind(activity001_500, activity501_1000, activity1001_1500, activity1501_2000,
                      activity2001_2500, activity2501_3000, activity3001_3500, activity3501_4000) 
-View(activityAll)
-###################################################################################################
-##### Here I switched the first and second data sets ##############################################
-#####(since we just want to add data onto each seasonal line instead of the other way around) #####
-###################################################################################################
 
 mergedActivity <- merge(activityAll, behaviorAll,
 				by.x = c("Article.ID", "Study.Site.ID", "Article.Initials", "Type.of.data", "Names.of.group"), 
 				by.y = c("Article.ID", "Study.Site.ID", "Coder.Initials", "Type.of.data", "Names.of.group"),
 				all.x = TRUE)
-
 
 #####################################################################################################################################
 #### There's a lot of places that didn't merge correctly, which we will have to deal with once the group name verifiers are done ####
@@ -191,34 +160,29 @@ mergedActivity			<- merge(mergedActivity, lumper, by.x = 'sciName', by.y = 'Mend
 mergedActivity			<- merge(mergedActivity, IUCN_tax, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
 mergedActivity			<- merge(mergedActivity, TenKTrees, by.x = 'sciName', by.y = 'Mendeley.tag', all.x=TRUE) 
 
-
-View(mergedActivity)
-
 ##*activity budget:  a) % social b) % grooming c) % feeding d) rate of aggresstion  e) submission
 ##*a) % social
-##*% time social in table as "X..time.social" --> 2/28 works
+##*% time social in table as "X..time.social" 
 mergedActivity$X..time.social <- ifelse(is.na(mergedActivity$X..time.social.x) == TRUE & is.na(mergedActivity$X..time.social.y) == TRUE, 0,1)
 
 mergedActivity_social <- aggregate(mergedActivity$X..time.social, list(mergedActivity$sciName), FUN = sum)
 
-#percent_feeding --> 2/28 works
+#percent_feeding 
 mergedActivity$X..time.feeding <- ifelse(is.na(mergedActivity$X..time.feeding.x) == TRUE & is.na(mergedActivity$X..time.feeding.y) == TRUE, 0,1)
 
 mergedActivity_feeding <- aggregate(mergedActivity$X..time.feeding, list(mergedActivity$sciName), FUN = sum)
 
-#percent_grooming --> 2/28 works
+#percent_grooming 
 mergedActivity$X..time.grooming <- ifelse(is.na(mergedActivity$X..time.grooming.x) == TRUE & is.na(mergedActivity$X..time.grooming.y) == TRUE, 0,1)
 
 mergedActivity_grooming <- aggregate(mergedActivity$X..time.grooming, list(mergedActivity$sciName), FUN = sum)
 
-
-#rate_aggression --> 2/28 works
+#rate_aggression 
 mergedActivity$Rate.of.aggression <- ifelse(is.na(mergedActivity$Rate.of.aggression.x) == TRUE & is.na(mergedActivity$Rate.of.aggression.y) == TRUE, 0,1)
 
 mergedActivity_aggression <- aggregate(mergedActivity$Rate.of.aggression, list(mergedActivity$sciName), FUN = sum)
 
-#rate_submission --> 2/28 works
-
+#rate_submission 
 mergedActivity$Rate.of.submission <- ifelse(is.na(mergedActivity$Rate.of.submission.x) == TRUE & is.na(mergedActivity$Rate.of.submission.y) == TRUE, 0,1)
 
 mergedActivity_submission <- aggregate(mergedActivity$Rate.of.submission, list(mergedActivity$sciName), FUN = sum)
@@ -232,8 +196,6 @@ mergedActivity_submission <- aggregate(mergedActivity$Rate.of.submission, list(m
 #* previous examples
 #############################################################################################################
 #############################################################################################################
-
-
 
 ##**Feeding data 
 ##*feeding data:  a) specific data (plant reproductive parts, fungi, insect, foliage)
@@ -288,7 +250,6 @@ mergedFeeding_fungus <- aggregate(mergedFeeding$X..fungus, list(mergedFeeding$sc
 
 
 ##*Home range size
-##**downloaded seasonal ranging data*
 
 setwd("C:/Users/arian/OneDrive/Desktop/PREdiCT")
 
@@ -325,8 +286,6 @@ mergedRange_size <- aggregate(mergedRange$Home.range.size..ha.., list(mergedRang
 
 mergedRange$Home.range.overlap.. <- ifelse(is.na(mergedRange$Home.range.overlap..x) == TRUE & is.na(mergedRange$Home.range.overlap..y) == TRUE, 0,1)
 mergedRange_overlap <- aggregate(mergedRange$Home.range.overlap.., list(mergedRange$sciName), FUN = sum)
-#####**If overlap needed I may need to select for yes as follow*
-
 mergedRange_overlap <- homerangeAll[homerangeAll$Home.range.overlap. == 'Yes',] #selecting only for "yes"
 mergedRange_overlap <- aggregate(mergedRange$Home.range.overlap.., list(mergedRange$sciName), FUN = sum)
 
@@ -334,46 +293,131 @@ mergedRange_overlap <- aggregate(mergedRange$Home.range.overlap.., list(mergedRa
 ########################################################################################################################################
 ##### HEAT MAP ##### https://r-graph-gallery.com/215-the-heatmap-function.html
 
-behavior_list <- list(allomaternal_care, social_learning, social_organization, intergroup_encounter_study, aggregate_malesec_dispersal, aggregate_male_dispersal, aggregate_male, aggregate_individual, aggregate_general, aggregate_femsec_dispersal, aggregate_female, aggregate_fem_dispersal, aggregate_dispersalgeneral)
-activty_list <- list(mergedActivity_aggression, mergedActivity_feeding, mergedActivity_grooming, mergedActivity_social, mergedActivity_submission)
-feeding_list <- list(mergedFeeding_fol, mergedFeeding_fungus, mergedFeeding_insects, mergedFeeding_prp)
-homerange_list <- list(mergedRange_overlap, mergedRange_size)
-###not a table -- possibly explains why other functions have errors  
 
-datamerged <- merge(behavior_list, activty_list, feeding_list, homerange_list, by = "id") #error
-
-datamerged_1 <- merge(behavior_list, activty_list, by = "id", all.x = TRUE) #error
-
-dataframes_all <- cbind(behavior_list, activty_list, feeding_list, homerange_list) #error 
-
-dataframes_all <- cbind(allomaternal_care, social_learning, social_organization, intergroup_encounter_study, aggregate_malesec_dispersal, aggregate_male_dispersal, aggregate_male, aggregate_individual, aggregate_general, aggregate_femsec_dispersal, aggregate_female, aggregate_fem_dispersal, aggregate_dispersalgeneral, mergedActivity_aggression, mergedActivity_feeding, mergedActivity_grooming, mergedActivity_social, mergedActivity_submission, mergedFeeding_fol, mergedFeeding_fungus, mergedFeeding_insects, mergedFeeding_prp, mergedRange_overlap, mergedRange_size)
-#ERROR
+################## MERGING DATAFRAMES ###################
+mergedrange_all <- merge(mergedRange_overlap, mergedRange_size,
+                     by.x = c("Group.1"), 
+                     by.y = c("Group.1"),
+                     all.x = TRUE, all.y = TRUE)
 
 
-all_df <- cbind(mergedActivity, mergedRange) ##different dfs, errors seems to be the same: differing #of rows
-all_activity <- 
-all_feeding <- 
-all_homerange <-
-
-#Takes a sequence of vector, matrix or data-frame arguments and combines them by columns
-  bind_cols(df1, df2)
+mergedfeeding_all <-merge(mergedFeeding_fungus, mergedFeeding_insects, mergedFeeding_fol, mergedFeeding_prp,
+                            by.x = c("Group.1"), 
+                            by.y = c("Group.1"),
+                            all.x = TRUE, all.y = TRUE)
 
 
-library(dplyr)
-all_df <- bind_cols(allomaternal_care, social_learning, social_organization, intergroup_encounter_study, aggregate_malesec_dispersal, aggregate_male_dispersal, aggregate_male, aggregate_individual, aggregate_general, aggregate_femsec_dispersal, aggregate_female, aggregate_fem_dispersal, aggregate_dispersalgeneral, mergedActivity_aggression, mergedActivity_feeding, mergedActivity_grooming, mergedActivity_social, mergedActivity_submission, mergedFeeding_fol, mergedFeeding_fungus, mergedFeeding_insects, mergedFeeding_prp, mergedRange_overlap, mergedRange_size)
-##getting somehwere --> Error in `bind_cols()`:
-! Can't recycle `..1` (size 100) to match `..2` (size 25).
-Run `rlang::last_error()` to see where the error occurred.' 
 
-all_df <- bind_cols(list(behavior_list, activty_list))
-dplyr::bind_cols(list(behavior_list, activty_list))
-vctrs::vec_cbind(!!!dots, .name_repair = .name_repair)
-
-###Seems as the amount of rows needs to be equal across each df to merge df together
-df_merged <- merge(mergedActivity, mergedRange, all.x = T) ##error
+mergedactivity_all_1 <- merge(mergedActivity_aggression, mergedActivity_feeding, 
+                            by.x = c("Group.1"), 
+                            by.y = c("Group.1"),
+                            all.x = TRUE, all.y = TRUE)
 
 
-merged_1a <- merge(mergedActivity, mergedRange,
-                     by.x = c("Article.ID", "Study.Site.ID", "Article.Initials", "Type.of.data", "Names.of.group"), 
-                     by.y = c("Article.ID""Study.Site.ID", "Coder.Initials", "Type.of.data", "Names.of.group"),
-                     all.x = TRUE) #error 
+
+mergedactivity_all_2 <- merge(mergedActivity_grooming, mergedActivity_social, 
+                              by.x = c("Group.1"), 
+                              by.y = c("Group.1"),
+                              all.x = TRUE, all.y = TRUE)
+
+mergedactivity_all_3 <- merge(mergedactivity_all_1, mergedactivity_all_2, 
+                              by.x = c("Group.1"), 
+                              by.y = c("Group.1"),
+                              all.x = TRUE, all.y = TRUE)
+
+mergedactivity_all <- merge(mergedactivity_all_3, mergedActivity_submission, 
+                            by.x = c("Group.1"), 
+                            by.y = c("Group.1"),
+                            all.x = TRUE, all.y = TRUE)
+
+behavior_all <- merge(allomaternal_care, social_learning, social_organization, intergroup_encounter_study, 
+                      by.x = c("Group.1"), 
+                      by.y = c("Group.1"),
+                      all.x = TRUE, all.y = TRUE)
+
+
+
+aggregate_female_all <-merge(aggregate_female, aggregate_fem_dispersal, aggregate_femsec_dispersal, 
+                      by.x = c("Group.1"), 
+                      by.y = c("Group.1"),
+                      all.x = TRUE, all.y = TRUE)
+  
+aggregate_male_all <- merge(aggregate_male, aggregate_male_dispersal, aggregate_malesec_dispersal, 
+                            by.x = c("Group.1"), 
+                            by.y = c("Group.1"),
+                            all.x = TRUE, all.y = TRUE)
+
+
+aggregate_general_all <- merge(aggregate_general, aggregate_dispersalgeneral,
+                               by.x = c("Group.1"), 
+                               by.y = c("Group.1"),
+                               all.x = TRUE, all.y = TRUE)
+
+aggregate_all <- merge(aggregate_female_all, aggregate_male_all, aggregate_general_all,
+                       by.x = c("Group.1"), 
+                       by.y = c("Group.1"),
+                       all.x = TRUE, all.y = TRUE)
+
+
+merged_aggregate_all <- merge(aggregate_individual,  aggregate_all, 
+                                  by.x = c("Group.1"), 
+                                  by.y = c("Group.1"),
+                                  all.x = TRUE, all.y = TRUE)
+
+#mergedrange_all
+#mergedfeeding_all
+#mergedactivity_all
+#behavior_all
+#merged_aggregate_all
+
+all_data_merged <- merge(mergedrange_all,  mergedfeeding_all, mergedactivity_all,behavior_all, merged_aggregate_all, 
+                         by.x = c("Group.1"), 
+                         by.y = c("Group.1"),
+                         all.x = TRUE, all.y = TRUE)
+##ERROR: Error in if (sort) res <- res[if (all.x || all.y) { : 
+## the condition has length > 1 
+
+all_data_merged_1 <-  merge(mergedrange_all,  mergedfeeding_all,
+                          by.x = c("Group.1"), 
+                          by.y = c("Group.1"),
+                          all.x = TRUE, all.y = TRUE)
+
+all_data_merged_2 <- merge(mergedactivity_all,  behavior_all,
+                           by.x = c("Group.1"), 
+                           by.y = c("Group.1"),
+                           all.x = TRUE, all.y = TRUE)
+
+all_data_merged_3 <- merge(all_data_merged_1,  all_data_merged_2,
+                           by.x = c("Group.1"), 
+                           by.y = c("Group.1"),
+                           all.x = TRUE, all.y = TRUE)
+
+all_data_merged <- merge(all_data_merged_3,  merged_aggregate_all,
+                         by.x = c("Group.1"), 
+                         by.y = c("Group.1"),
+                         all.x = TRUE, all.y = TRUE)
+
+
+
+############ HEAT MAP ###################
+# The mtcars dataset:
+data <- as.matrix(mtcars)
+
+# Default Heatmap
+heatmap(data)
+
+data_heatmap <- as.matrix(all_data_merged)
+heatmap(data_heatmap) #error: Error in heatmap(data_heatmap) : 'x' must be a numeric matrix
+
+
+heatmap(data_heatmap, scale = "column") #error: 'x' must be a numeric matrix
+
+heatmap(as.matrix(all_data_merged[, -1])) #getting somewhere 
+matrix_data <- as.matrix(all_data_merged[, -1])
+rownames(matrix_data) <- all_data_merged$Comparison
+heatmap(matrix_data)
+
+t(matrix_data)
+heatmap(matrix_data, scale = "column") ##graph is there, but I don't think it's the correct direction
+
+heatmap(matrix_data, col = terrain.colors(256)) #works 
