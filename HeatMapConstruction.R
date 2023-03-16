@@ -131,8 +131,6 @@ intergroup_encounter_study <- aggregate(behaviorAll_igs$Intergroup.encounter.stu
 behaviorAll$Aggregatemale <- ifelse(is.na(behaviorAll$Mean.adult.males) == TRUE & is.na(behaviorAll$Median.adult.males) == TRUE & is.na(behaviorAll$Min...adult.males) == TRUE & is.na(behaviorAll$Max...adult.males) ==TRUE, 0,1)
 #0 are missing 
 #1 has at least 1 of the variables
-                                   
-table(behaviorAll$Aggregatemale) 
 aggregate_male <- aggregate(behaviorAll$Aggregatemale, by= list(behaviorAll$sciName), FUN = sum)
 
 #For general is.na == TRUE for all male, females, individual (12 totals:mean, max, median, min)
@@ -235,6 +233,9 @@ mergedrange_all <- merge(mergedRange_overlap, mergedRange_size,
                      by.y = c("Group.1"),
                      all.x = TRUE, all.y = TRUE)
 
+names(mergedrange_all) <- c("Lumper_Taxonomy", "Range Overlap", "Range Size")
+
+---
 mergedfeeding1	 <-merge(mergedFeeding_fungus, mergedFeeding_insects,
                             by.x = c("Group.1"), 
                             by.y = c("Group.1"),
@@ -247,8 +248,12 @@ mergedfeeding_all	 <-merge(mergedfeeding2, mergedFeeding_prp,
                             by.x = c("Group.1"), 
                             by.y = c("Group.1"),
                             all.x = TRUE, all.y = TRUE)
+
+names(mergedfeeding_all) <- c("Lumper_Taxonomy", "Fungus", "Insects", " Folivory", "Plant reproductive parts")
+
 ###Name your columns after completing all of the merges
 
+---
 mergedactivity_all_1 <- merge(mergedActivity_aggression, mergedActivity_feeding, 
                             by.x = c("Group.1"), 
                             by.y = c("Group.1"),
@@ -269,10 +274,20 @@ mergedactivity_all <- merge(mergedactivity_all_3, mergedActivity_submission,
                             by.y = c("Group.1"),
                             all.x = TRUE, all.y = TRUE)
 
+names(mergedactivity_all) <- c("Lumper_Taxonomy", "Rate of aggression", "%Feeding", "%Grooming", "%Social", "Rate of submission")
+
+
 behavior_all <- merge(allomaternal_care, social_learning, social_organization, intergroup_encounter_study, 
                       by.x = c("Group.1"), 
                       by.y = c("Group.1"),
                       all.x = TRUE, all.y = TRUE)
+View(behavior_all)
+names(behavior_all) <- c("Lumper_Taxonomy") #only 3 colums, need to find names for 2 data columns
+# columns do not match the # of variables merged in the function above
+
+names(behavior_all) <- c("Lumper_Taxonomy")
+
+
 
 aggregate_female_all <-merge(aggregate_female, aggregate_fem_dispersal, aggregate_femsec_dispersal, 
                       by.x = c("Group.1"), 
@@ -299,31 +314,41 @@ merged_aggregate_all <- merge(aggregate_individual,  aggregate_all,
                                   by.y = c("Group.1"),
                                   all.x = TRUE, all.y = TRUE)
 
+View(merged_aggregate_all) ## 6 columns (1 being Lumper taxonomy hence:)
+names(merged_aggregate_all) <- c("Lumper_Taxonomy", "Dispersal Female data", "Dispersal Male data", "Dispersal General data", "Dispersal fem, male, gen data", "Dispersal Individual data")
+
 #mergedrange_all
 #mergedfeeding_all
 #mergedactivity_all
 #behavior_all
 #merged_aggregate_all
 
+
+
 all_data_merged_1 <-  merge(mergedrange_all,  mergedfeeding_all,
-                          by.x = c("Group.1"), 
-                          by.y = c("Group.1"),
+                          by.x = c("Lumper_Taxonomy"), 
+                          by.y = c("Lumper_Taxonomy"),
                           all.x = TRUE, all.y = TRUE)
 
 all_data_merged_2 <- merge(mergedactivity_all,  behavior_all,
-                           by.x = c("Group.1"), 
-                           by.y = c("Group.1"),
+                           by.x = c("Lumper_Taxonomy"), 
+                           by.y = c("Lumper_Taxonomy"),
                            all.x = TRUE, all.y = TRUE)
 
 all_data_merged_3 <- merge(all_data_merged_1,  all_data_merged_2,
-                           by.x = c("Group.1"), 
-                           by.y = c("Group.1"),
+                           by.x = c("Lumper_Taxonomy"), 
+                           by.y = c("Lumper_Taxonomy"),
                            all.x = TRUE, all.y = TRUE)
 
 all_data_merged <- merge(all_data_merged_3,  merged_aggregate_all,
-                         by.x = c("Group.1"), 
-                         by.y = c("Group.1"),
+                         by.x = c("Lumper_Taxonomy"), 
+                         by.y = c("Lumper_Taxonomy"),
                          all.x = TRUE, all.y = TRUE)
+
+
+## Error in `[.data.frame`(x, rep.int(NA_integer_, nyy), nm.x, drop = FALSE) : 
+## undefined columns selected
+## changed from Group.1 ro Lumper_taxonomy, and still errors
 
 #############################
 ##### Plotting heat map #####
@@ -336,7 +361,7 @@ data <- as.matrix(mtcars)
 heatmap(data)
 
 matrix_data			<- as.matrix(all_data_merged[, -1])
-rownames(matrix_data)	<- all_data_merged$Group.1
+rownames(matrix_data)	<- all_data_merged$Lumper_Taxonomy
 heatmap(matrix_data)
 
 heatmap(matrix_data, scale = "column") 
