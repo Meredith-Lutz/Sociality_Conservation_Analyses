@@ -111,7 +111,9 @@ mergedRange <- merge(homerangeAll, behaviorAll,
 ### Summarizing variables by species ###
 ########################################
 #**summarizing social organization*
+
 social_organization <- aggregate(behaviorAll$Social.organization, by= list(behaviorAll$sciName), FUN = length)
+
 #group 1 = species 
 #x = # of line we have for that species that are not blank
 
@@ -235,7 +237,7 @@ mergedrange_all <- merge(mergedRange_overlap, mergedRange_size,
 
 names(mergedrange_all) <- c("Lumper_Taxonomy", "Range Overlap", "Range Size")
 
----
+
 mergedfeeding1	 <-merge(mergedFeeding_fungus, mergedFeeding_insects,
                             by.x = c("Group.1"), 
                             by.y = c("Group.1"),
@@ -253,7 +255,7 @@ names(mergedfeeding_all) <- c("Lumper_Taxonomy", "Fungus", "Insects", " Folivory
 
 ###Name your columns after completing all of the merges
 
----
+
 mergedactivity_all_1 <- merge(mergedActivity_aggression, mergedActivity_feeding, 
                             by.x = c("Group.1"), 
                             by.y = c("Group.1"),
@@ -277,24 +279,42 @@ mergedactivity_all <- merge(mergedactivity_all_3, mergedActivity_submission,
 names(mergedactivity_all) <- c("Lumper_Taxonomy", "Rate of aggression", "%Feeding", "%Grooming", "%Social", "Rate of submission")
 
 
-behavior_all <- merge(allomaternal_care, social_learning, social_organization, intergroup_encounter_study, 
+behavior_all_1 <- merge(allomaternal_care, social_learning, 
                       by.x = c("Group.1"), 
                       by.y = c("Group.1"),
                       all.x = TRUE, all.y = TRUE)
+
+behavior_all_2 <- merge(social_organization, intergroup_encounter_study, 
+                        by.x = c("Group.1"), 
+                        by.y = c("Group.1"),
+                        all.x = TRUE, all.y = TRUE)
+
+behavior_all <- merge(behavior_all_1, behavior_all_2, 
+                      by.x = c("Group.1"), 
+                      by.y = c("Group.1"),
+                      all.x = TRUE, all.y = TRUE)
+
+
 View(behavior_all)
-names(behavior_all) <- c("Lumper_Taxonomy") #only 3 colums, need to find names for 2 data columns
-# columns do not match the # of variables merged in the function above
+names(behavior_all) <- c("Lumper_Taxonomy", "Allomentral_care", "Social_learning", "Social_organization", "intergroup_encounter_study")
 
-names(behavior_all) <- c("Lumper_Taxonomy")
-
-
-
-aggregate_female_all <-merge(aggregate_female, aggregate_fem_dispersal, aggregate_femsec_dispersal, 
+aggregate_female_all_1 <-merge(aggregate_female, aggregate_fem_dispersal,  
                       by.x = c("Group.1"), 
                       by.y = c("Group.1"),
                       all.x = TRUE, all.y = TRUE)
   
-aggregate_male_all <- merge(aggregate_male, aggregate_male_dispersal, aggregate_malesec_dispersal, 
+aggregate_female_all <-merge(aggregate_female_all_1, aggregate_femsec_dispersal,  
+                               by.x = c("Group.1"), 
+                               by.y = c("Group.1"),
+                               all.x = TRUE, all.y = TRUE)
+
+
+aggregate_male_all_1 <- merge(aggregate_male, aggregate_male_dispersal,  
+                            by.x = c("Group.1"), 
+                            by.y = c("Group.1"),
+                            all.x = TRUE, all.y = TRUE)
+
+aggregate_male_all <- merge(aggregate_male_all_1, aggregate_malesec_dispersal,
                             by.x = c("Group.1"), 
                             by.y = c("Group.1"),
                             all.x = TRUE, all.y = TRUE)
@@ -304,18 +324,23 @@ aggregate_general_all <- merge(aggregate_general, aggregate_dispersalgeneral,
                                by.y = c("Group.1"),
                                all.x = TRUE, all.y = TRUE)
 
-aggregate_all <- merge(aggregate_female_all, aggregate_male_all, aggregate_general_all,
+aggregate_all_1 <- merge(aggregate_female_all, aggregate_male_all, 
                        by.x = c("Group.1"), 
                        by.y = c("Group.1"),
                        all.x = TRUE, all.y = TRUE)
 
-merged_aggregate_all <- merge(aggregate_individual,  aggregate_all, 
+aggregate_all_2 <- merge(aggregate_all_1, aggregate_general_all, 
+                         by.x = c("Group.1"), 
+                         by.y = c("Group.1"),
+                         all.x = TRUE, all.y = TRUE)
+
+merged_aggregate_all <- merge(aggregate_all_2, aggregate_individual, 
                                   by.x = c("Group.1"), 
                                   by.y = c("Group.1"),
                                   all.x = TRUE, all.y = TRUE)
 
-View(merged_aggregate_all) ## 6 columns (1 being Lumper taxonomy hence:)
-names(merged_aggregate_all) <- c("Lumper_Taxonomy", "Dispersal Female data", "Dispersal Male data", "Dispersal General data", "Dispersal fem, male, gen data", "Dispersal Individual data")
+View(merged_aggregate_all) 
+names(merged_aggregate_all) <- c("Lumper_Taxonomy", "Aggregate_female", "Aggregate_female_dispersal", "Aggregate_femsec_dispersal", "Aggregate_male", "Aggregate_male_dispersal", "Aggregate_Malesec_dispersal", "Aggregate_general", "Aggregate_dispersalgeneral", "Aggregate_individual")
 
 #mergedrange_all
 #mergedfeeding_all
@@ -345,10 +370,6 @@ all_data_merged <- merge(all_data_merged_3,  merged_aggregate_all,
                          by.y = c("Lumper_Taxonomy"),
                          all.x = TRUE, all.y = TRUE)
 
-
-## Error in `[.data.frame`(x, rep.int(NA_integer_, nyy), nm.x, drop = FALSE) : 
-## undefined columns selected
-## changed from Group.1 ro Lumper_taxonomy, and still errors
 
 #############################
 ##### Plotting heat map #####
