@@ -72,7 +72,7 @@ behaviorAllNoBlanks$X..time.feeding	<- as.numeric(behaviorAllNoBlanks$X..time.fe
 
 #Call records in behavior sheet that have extreme values for %time feeding (less than 10%)
 LowFeedingValues <- behaviorAllNoBlanks[behaviorAllNoBlanks $X..time.feeding <= 10 & is.na(behaviorAllNoBlanks $X..time.feeding) == FALSE, 
-			c('Article.ID', 'X..time.feeding')]
+			c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'X..time.feeding')]
 
 #this object gives you a table of article IDs and X..time.feeding that is <= 10 %. Check to make sure these are correct
 #using the PDFs to verify. Check off on the "datatodoublecheck" sheet for documentation.
@@ -80,14 +80,14 @@ LowFeedingValues
 			
 #Call records in behavior sheet that have extreme values for %time feeding (greater than 90%)
 HighFeedingValues <- behaviorAllNoBlanks[behaviorAllNoBlanks $X..time.feeding >= 90 & is.na(behaviorAllNoBlanks $X..time.feeding) == FALSE, 
-			c('Article.ID', 'X..time.feeding')]	
+			c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'X..time.feeding')]	
 	
 HighFeedingValues
 #looks like there are no rows, so maybe no errors to check?
 
 #Call records in behavior sheet that have extreme values for %time social (less than 10%)
 LowSocialValues <- behaviorAllNoBlanks[behaviorAllNoBlanks$X..time.social <= 10 & is.na(behaviorAllNoBlanks$X..time.social) == FALSE, 
-			c('Article.ID', 'X..time.social')]
+			c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'X..time.social')]
 
 #this object gives you a table of article IDs and X..time.social that is <= 10 %. Check to make sure these are correct
 #using the PDFs to verify. Check off on the "datatodoublecheck" sheet for documentation.
@@ -96,13 +96,13 @@ LowSocialValues
 
 #Call records in behavior sheet that have extreme values for %time social (greater than 90%)
 HighSocialValues <- behaviorAllNoBlanks[behaviorAllNoBlanks$X..time.social >= 90 & is.na(behaviorAllNoBlanks$X..time.social) == FALSE, 
-			c('Article.ID', 'X..time.social')]		
+			c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'X..time.social')]		
 HighSocialValues
 #again, says 0 rows so maybe no errors to check?
 
 #Call records in behavior sheet that have extreme values for %time grooming (less than 10%)
 LowGroomingValues	<- behaviorAllNoBlanks[behaviorAllNoBlanks$X..time.grooming <= 10 & is.na(behaviorAllNoBlanks $X..time.grooming) == FALSE, 
-				c('Article.ID', 'X..time.grooming')]
+				c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'X..time.grooming')]
 
 #this object gives you a table of article IDs and X..time.social that is <= 10 %. Check to make sure these are correct
 #using the PDFs to verify. Check off on the "datatodoublecheck" sheet for documentation.
@@ -111,7 +111,7 @@ LowGroomingValues
 
 #Call records in behavior sheet that have extreme values for %time social (greater than 90%)
 HighGroomingValues	<- behaviorAllNoBlanks[behaviorAllNoBlanks$X..time.grooming >= 90 & is.na(behaviorAllNoBlanks$X..time.grooming) == FALSE, 
-					c('Article.ID', 'X..time.grooming')]		
+					c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'X..time.grooming')]		
 
 HighGroomingValues
 #again, says 0 rows so maybe no errors to check?
@@ -162,13 +162,13 @@ InsectHighValues
 ####Still need to do low/high fungus
 #check for % fungus extreme values
 FungusLowValues	<- behaviorAllNoBlanks[behaviorAllNoBlanks $X..fungus <= 10 &is.na(behaviorAllNoBlanks $X..fungus) == FALSE, 
-            		c('Article.ID', 'X..fungus')]
+            		c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'X..fungus')]
             
 FungusLowValues
 #theres a handful to check here
 
 FungusHighValues	<- behaviorAllNoBlanks[behaviorAllNoBlanks $X..fungus >= 90 &is.na(behaviorAllNoBlanks $X..fungus) == FALSE, 
-            		c('Article.ID', 'X..fungus')]
+            		c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'X..fungus')]
   
 FungusHighValues
 #there are no rows here to check
@@ -268,4 +268,11 @@ FungusValuesMissingMethod <- behaviorAllNoBlanks[is.na(behaviorAllNoBlanks$X..fu
 
 ##############################################################################################                               
 ##### Now need to do the same for the seasonal activity budget and seasonal feeding data #####
-##############################################################################################                               
+##############################################################################################
+
+##replace blanks with NA's (see example above where you read in seasonal activity budget data
+##copy in the section titled "Behavior sheet Activity budget" and replace the dataset name with the seasonal activity budget dataset
+##when you subset the data you'll want to add in the phase information for seasonal
+##For example:
+##LowFeedingValues <- behaviorAllNoBlanks[behaviorAllNoBlanks$X..time.feeding <= 10 & is.na(behaviorAllNoBlanks $X..time.feeding) == FALSE, 
+##			c('Article.Initials', 'Article.ID', 'Study.Site.ID', ADD PHASE VARIABLES HERE, 'X..time.feeding')]
