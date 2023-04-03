@@ -271,7 +271,217 @@ FungusValuesMissingMethod <- behaviorAllNoBlanks[is.na(behaviorAllNoBlanks$X..fu
 ##############################################################################################
 
 ##replace blanks with NA's (see example above where you read in seasonal activity budget data
+seasonalActivityAllNoBlanks <- seasonalActivityAll
+seasonalActivityAllNoBlanks[seasonalActivityAllNoBlanks == ""] <- NA
+
+seasonalFeedingAllNoBlanks <- seasonalFeedingAll
+seasonalFeedingAllNoBlanks[seasonalFeedingAllNoBlanks == ""] <- NA
+
 ##copy in the section titled "Behavior sheet Activity budget" and replace the dataset name with the seasonal activity budget dataset
+
+###################################################
+##### Behavior Sheet Seasonal Activity budget #####
+###################################################
+head(seasonalActivityAllNoBlanks)
+colnames(seasonalActivityAllNoBlanks)
+
+#check the class of the variable ' % time feeding' and change class to numeric
+seasonalActivityAllNoBlanks$X..time.feeding	<- as.numeric(seasonalActivityAllNoBlanks$X..time.feeding)
+
+#Call records in behavior sheet that have extreme values for %time feeding (less than 10%)
+LowFeedingValues <- seasonalActivityAllNoBlanks[seasonalActivityAllNoBlanks $X..time.feeding <= 10 & is.na(seasonalActivityAllNoBlanks $X..time.feeding) == FALSE, 
+			c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..time.feeding')]
+
+#this object gives you a table of article IDs and X..time.feeding that is <= 10 %. Check to make sure these are correct
+#using the PDFs to verify. Check off on the "datatodoublecheck" sheet for documentation.
+LowFeedingValues	
+			
+#Call records in behavior sheet that have extreme values for %time feeding (greater than 90%)
+HighFeedingValues <- seasonalActivityAllNoBlanks[seasonalActivityAllNoBlanks $X..time.feeding >= 90 & is.na(seasonalActivityAllNoBlanks $X..time.feeding) == FALSE, 
+			c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..time.feeding')]	
+	
+HighFeedingValues
+#looks like there are no rows, so maybe no errors to check?
+
+#Call records in behavior sheet that have extreme values for %time social (less than 10%)
+LowSocialValues <- seasonalActivityAllNoBlanks[seasonalActivityAllNoBlanks$X..time.social <= 10 & is.na(seasonalActivityAllNoBlanks$X..time.social) == FALSE, 
+			c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..time.social')]
+
+#this object gives you a table of article IDs and X..time.social that is <= 10 %. Check to make sure these are correct
+#using the PDFs to verify. Check off on the "datatodoublecheck" sheet for documentation.
+LowSocialValues	
+#this might be more realistic for some to actually be in this low range, but better to double check?
+
+#Call records in behavior sheet that have extreme values for %time social (greater than 90%)
+HighSocialValues <- seasonalActivityAllNoBlanks[seasonalActivityAllNoBlanks$X..time.social >= 90 & is.na(seasonalActivityAllNoBlanks$X..time.social) == FALSE, 
+			c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..time.social')]		
+HighSocialValues
+#again, says 0 rows so maybe no errors to check?
+
+#Call records in behavior sheet that have extreme values for %time grooming (less than 10%)
+LowGroomingValues	<- seasonalActivityAllNoBlanks[seasonalActivityAllNoBlanks$X..time.grooming <= 10 & is.na(seasonalActivityAllNoBlanks $X..time.grooming) == FALSE, 
+				c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..time.grooming')]
+
+#this object gives you a table of article IDs and X..time.social that is <= 10 %. Check to make sure these are correct
+#using the PDFs to verify. Check off on the "datatodoublecheck" sheet for documentation.
+LowGroomingValues	
+#this might be more realistic for some to actually be in this low range, but better to double check?
+
+#Call records in behavior sheet that have extreme values for %time social (greater than 90%)
+HighGroomingValues	<- seasonalActivityAllNoBlanks[seasonalActivityAllNoBlanks$X..time.grooming >= 90 & is.na(seasonalActivityAllNoBlanks$X..time.grooming) == FALSE, 
+					c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..time.grooming')]		
+
+HighGroomingValues
+#again, says 0 rows so maybe no errors to check?
+
+###########################################
+##### Behavior Sheet Seasonal Feeding #####
+###########################################
+#check for % plant reproductive parts extreme values
+PlantReproductivePartsLowValues 	<- seasonalFeedingAllNoBlanks[seasonalFeedingAllNoBlanks $X..plant.reproductive.parts <= 10 &is.na(seasonalFeedingAllNoBlanks $X..plant.reproductive.parts) == FALSE, 
+           						 c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..plant.reproductive.parts')]
+            
+PlantReproductivePartsLowValues
+#there are a few to check through
+
+PlantReproductivePartsHighValues 	<- seasonalFeedingAllNoBlanks[seasonalFeedingAllNoBlanks $X..plant.reproductive.parts >= 90 &is.na(seasonalFeedingAllNoBlanks $X..plant.reproductive.parts) == FALSE, 
+            					c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..plant.reproductive.parts')]
+            
+PlantReproductivePartsHighValues
+#there are a few to check through
+
+#check for % folivory extreme values
+FolivoryLowValues 	<- seasonalFeedingAllNoBlanks[seasonalFeedingAllNoBlanks $X..folivory <= 10 &is.na(seasonalFeedingAllNoBlanks $X..folivory) == FALSE, 
+          				  c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..folivory')]
+            
+FolivoryLowValues
+#there's a handful to check here
+
+FolivoryHighValues <- seasonalFeedingAllNoBlanks[seasonalFeedingAllNoBlanks $X..folivory >= 90 &is.na(seasonalFeedingAllNoBlanks $X..folivory) == FALSE, 
+            c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..folivory')]
+            
+FolivoryHighValues
+#there are a handful here to check
+
+#check for % insect extreme values
+InsectLowValues	<- seasonalFeedingAllNoBlanks[seasonalFeedingAllNoBlanks$X..insects <= 10 &is.na(seasonalFeedingAllNoBlanks$X..insects) == FALSE, 
+            		c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..insects')]
+            
+InsectLowValues
+#theres a handful to check here
+
+InsectHighValues	 <- seasonalFeedingAllNoBlanks[seasonalFeedingAllNoBlanks$X..insects >= 90 &is.na(seasonalFeedingAllNoBlanks$X..insects) == FALSE, 
+            		c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..insects')]
+            
+InsectHighValues
+#there is one to check here
+
+####Still need to do low/high fungus
+#check for % fungus extreme values
+FungusLowValues	<- seasonalFeedingAllNoBlanks[seasonalFeedingAllNoBlanks $X..fungus <= 10 &is.na(seasonalFeedingAllNoBlanks $X..fungus) == FALSE, 
+            		c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..fungus')]
+            
+FungusLowValues
+#theres a handful to check here
+
+FungusHighValues	<- seasonalFeedingAllNoBlanks[seasonalFeedingAllNoBlanks $X..fungus >= 90 &is.na(seasonalFeedingAllNoBlanks $X..fungus) == FALSE, 
+            		c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..fungus')]
+  
+FungusHighValues
+#there are no rows here to check
+
+################################################
+##### Check insect/fungus eater (seasonal)######
+################################################
+### Here check to make sure that if insect.eater was marked "yes" when the % insects was present 
+class(seasonalFeedingAllNoBlanks$Insect.eater)
+seasonalFeedingAllNoBlanks$Insect.eater <- as.factor(seasonalFeedingAllNoBlanks$Insect.eater)
+
+#this gives you a list of all the article IDs where % insects had a value, but insect eater is marked no
+InsectPercentNoEater <- seasonalFeedingAllNoBlanks[is.na(seasonalFeedingAllNoBlanks$X..insects) == FALSE & seasonalFeedingAllNoBlanks$Insect.eater == 'No' & is.na(seasonalFeedingAllNoBlanks$Insect.eater) == FALSE, 
+            c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'Insect.eater', 'X..insects')]
+
+InsectPercentNoEater 
+
+#This gives you the times where % insects is filled out, but insect eater isn't marked
+InsectPercentNAEater <- seasonalFeedingAllNoBlanks[is.na(seasonalFeedingAllNoBlanks$X..insects) == FALSE & is.na(seasonalFeedingAllNoBlanks$Insect.eater) == TRUE, 
+            c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'Insect.eater', 'X..insects')]
+
+InsectPercentNAEater
+
+## Analagous code for fungus eater
+class(seasonalFeedingAllNoBlanks$Fungus.eater)
+seasonalFeedingAllNoBlanks$Fungus.eater <- as.factor(seasonalFeedingAllNoBlanks$Fungus.eater)
+
+#this gives you a list of all the article IDs where % insects had a value, but insect eater is marked no
+FungusPercentNoEater <- seasonalFeedingAllNoBlanks[is.na(seasonalFeedingAllNoBlanks$X..fungus) == FALSE & seasonalFeedingAllNoBlanks$Fungus.eater == 'No' & is.na(seasonalFeedingAllNoBlanks$Fungus.eater) == FALSE, 
+            c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'Fungus.eater', 'X..fungus')]
+
+FungusPercentNoEater 
+
+#This gives you the times where % insects is filled out, but insect eater isn't marked
+FungusPercentNAEater <- seasonalFeedingAllNoBlanks[is.na(seasonalFeedingAllNoBlanks$X..fungus) == FALSE & is.na(seasonalFeedingAllNoBlanks$Fungus.eater) == TRUE, 
+            c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'Fungus.eater', 'X..fungus')]
+
+FungusPercentNAEater
+
+###################################
+##### Checking sums (seasonal)#####
+###################################
+#Want to ensure that diets and activity budgets sum up to less than 100 and more than 1
+            
+### total diets
+# first make sure all variables being summed are numeric
+seasonalFeedingAllNoBlanks$X..plant.reproductive.parts		<- as.numeric(seasonalFeedingAllNoBlanks$X..plant.reproductive.parts)
+seasonalFeedingAllNoBlanks$X..folivory				<- as.numeric(seasonalFeedingAllNoBlanks$X..folivory)
+seasonalFeedingAllNoBlanks$X..insects				<- as.numeric(seasonalFeedingAllNoBlanks$X..insects)
+seasonalFeedingAllNoBlanks$X..fungus					<- as.numeric(seasonalFeedingAllNoBlanks$X..fungus)
+behaviorAllFeedingCols	<- seasonalFeedingAllNoBlanks[, c('X..plant.reproductive.parts', 'X..folivory', 'X..insects', 'X..fungus')]
+ 
+#this section is meant to sum all categories for diet to see if it goes over 100%.
+seasonalFeedingAllNoBlanks$SumDiet <- apply(behaviorAllFeedingCols, 1, sum, na.rm = TRUE)
+
+#this checks to see if any of the summed diets are over 100 percent. 
+seasonalFeedingAllNoBlanks[seasonalFeedingAllNoBlanks$SumDiet > 100 & is.na(seasonalFeedingAllNoBlanks$SumDiet) == FALSE, c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'SumDiet')]
+
+#checks to see if the sum is less than 1 (as it would be if they were entered as propotion instead of %
+seasonalFeedingAllNoBlanks[seasonalFeedingAllNoBlanks$SumDiet < 1 & seasonalFeedingAllNoBlanks$SumDiet > 0 & is.na(seasonalFeedingAllNoBlanks$SumDiet) == FALSE, c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'SumDiet')] 
+                                                                           
+# total activity budgets
+behaviorAllActivityCols		<- seasonalActivityAllNoBlanks[, c('X..time.feeding', 'X..time.social')]
+seasonalActivityAllNoBlanks$SumActv	<- apply(behaviorAllActivityCols, 1, sum, na.rm = TRUE)
+
+#this does not return any rows. code seems to be working?
+seasonalActivityAllNoBlanks[seasonalActivityAllNoBlanks$SumActv > 100 & is.na(seasonalActivityAllNoBlanks$SumActv) == FALSE, c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'SumActv')]
+
+#checks to see if the sum is less than 1 (as it would be if they were entered as propotion instead of %
+seasonalActivityAllNoBlanks[seasonalActivityAllNoBlanks$SumActv < 1 & seasonalActivityAllNoBlanks$SumActv > 0 & is.na(seasonalActivityAllNoBlanks$SumActv) == FALSE, c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'SumActv')]              
+
+######################################
+##### Checking methods (seasonal)#####
+######################################
+### check to see if there is a grooming %, is there a method present?
+GroomingValuesMissingMethod <- seasonalActivityAllNoBlanks[is.na(seasonalActivityAllNoBlanks$X..time.grooming) == FALSE & is.na(seasonalActivityAllNoBlanks$Data.method.grooming) == TRUE,
+					c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..time.grooming', 'Data.method.grooming')]
+
+SocialValuesMissingMethod <- seasonalActivityAllNoBlanks[is.na(seasonalActivityAllNoBlanks$X..time.social) == FALSE & is.na(seasonalActivityAllNoBlanks$Data.method.social) == TRUE,
+					c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..time.social', 'Data.method.social')]
+
+FeedingValuesMissingMethod <- seasonalFeedingAllNoBlanks[is.na(seasonalFeedingAllNoBlanks$X..time.feeding) == FALSE & is.na(seasonalFeedingAllNoBlanks$Data.method.feeding) == TRUE,
+					c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..time.feeding', 'Data.method.feeding')]
+
+FolivoryValuesMissingMethod <- seasonalFeedingAllNoBlanks[is.na(seasonalFeedingAllNoBlanks$X..folivory) == FALSE & is.na(seasonalFeedingAllNoBlanks$Diet.methodology) == TRUE,
+					c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..folivory', 'Diet.methodology')]
+
+PRPValuesMissingMethod <- seasonalFeedingAllNoBlanks[is.na(seasonalFeedingAllNoBlanks$X..plant.reproductive.parts) == FALSE & is.na(seasonalFeedingAllNoBlanks$Diet.methodology) == TRUE,
+					c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..plant.reproductive.parts', 'Diet.methodology')]
+
+InsectsValuesMissingMethod <- seasonalFeedingAllNoBlanks[is.na(seasonalFeedingAllNoBlanks$X..insects) == FALSE & is.na(seasonalFeedingAllNoBlanks$Diet.methodology) == TRUE,
+					c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..insects', 'Diet.methodology')]
+
+FungusValuesMissingMethod <- seasonalFeedingAllNoBlanks[is.na(seasonalFeedingAllNoBlanks$X..fungus) == FALSE & is.na(seasonalFeedingAllNoBlanks$Diet.methodology) == TRUE,
+					c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Phase', 'Phase.Year', 'X..fungus', 'Diet.methodology')]
+
 ##when you subset the data you'll want to add in the phase information for seasonal
 ##For example:
 ##LowFeedingValues <- behaviorAllNoBlanks[behaviorAllNoBlanks$X..time.feeding <= 10 & is.na(behaviorAllNoBlanks $X..time.feeding) == FALSE, 
