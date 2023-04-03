@@ -42,6 +42,19 @@ table(relevantBehaviorLines$Names.of.group)
 #Use this line to find the article IDs for the group name you want to change
 relevantBehaviorLines[relevantBehaviorLines$Names.of.group == '',c(1:11, 92)]
 
+#########################
+### Group name combos ###
+#########################
+lumper		<- read.csv('Taxonomy Conversion - Lumper Taxonomy Conversion.csv', stringsAsFactors = FALSE)
+
+behaviorAll$sciName	<- ifelse(behaviorAll$species == '' & behaviorAll$subspecies == '', behaviorAll$Genus,
+                              ifelse(behaviorAll$subspecies == '', paste(behaviorAll$Genus, '_', behaviorAll$species, sep = ''),
+                                     paste(behaviorAll$Genus, '_', behaviorAll$species, '_', behaviorAll$subspecies, sep = '')))
+
+behaviorAll			<- merge(behaviorAll, lumper, by.x = 'sciName', by.y = 'Mendeley_tag', all.x=TRUE) 
+groupLines			<- behaviorAll[behaviorAll$Lumper_Taxonomy == 'Cebus_capucinus' & behaviorAll$Names.of.group == "Rambo's group",
+						c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Names.of.group', 'Lumper_Taxonomy')]
+
 ###########################
 ### Ignore this section ###
 ###########################
