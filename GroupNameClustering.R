@@ -52,8 +52,18 @@ behaviorAll$sciName	<- ifelse(behaviorAll$species == '' & behaviorAll$subspecies
                                      paste(behaviorAll$Genus, '_', behaviorAll$species, '_', behaviorAll$subspecies, sep = '')))
 
 behaviorAll			<- merge(behaviorAll, lumper, by.x = 'sciName', by.y = 'Mendeley_tag', all.x=TRUE) 
-groupLines			<- behaviorAll[behaviorAll$Lumper_Taxonomy == 'Cebus_capucinus' & behaviorAll$Names.of.group == "Rambo's group",
-						c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Names.of.group', 'Lumper_Taxonomy')]
+groupLines			<- behaviorAll[,c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'Names.of.group', 'Lumper_Taxonomy', 'articleIDssID')]
+
+studySite$smallLargeSite	<- factor(factor(studySite$Location.of.large.site):factor(studySite$Location.of.small.site))
+smallLargeSites			<- unique(studySite$smallLargeSite)
+
+behaviorAll				<- merge(behaviorAll, studySite[, c(29, 30)], by.x = 'articleIDssID', by.y = 'articleIDssID', all.x = TRUE)
+factor(factor(behaviorAll$Article.ID):factor(behaviorAll$Study.Site.ID))
+
+namesBySpeciesSite	<- aggregate(behaviorAll$Names.of.group, by = list(site = behaviorAll$smallLargeSite, species = behaviorAll$Lumper_Taxonomy, names = behaviorAll$Names.of.group), FUN = length)
+
+namesBySpeciesSite	<- namesBySpeciesSite[order(namesBySpeciesSite$site, namesBySpeciesSite$species, namesBySpeciesSite$names),]
+write.csv(namesBySpeciesSite, 'namesBySpeciesSite.csv', row.names = FALSE)
 
 ###########################
 ### Ignore this section ###
