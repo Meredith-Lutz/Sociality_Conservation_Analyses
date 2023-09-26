@@ -16,6 +16,7 @@
 ##*9) home range size 
 
 setwd("C:/Users/arian/OneDrive/Desktop/PREdiCT")
+setwd('G:/My Drive/Graduate School/Research/Projects/SocialityConservationAnalyses/Data')
 
 library(ape)
 

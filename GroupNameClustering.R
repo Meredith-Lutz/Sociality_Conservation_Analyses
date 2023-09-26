@@ -57,12 +57,14 @@ groupLines			<- behaviorAll[,c('Article.Initials', 'Article.ID', 'Study.Site.ID'
 studySite$smallLargeSite	<- factor(factor(studySite$Location.of.large.site):factor(studySite$Location.of.small.site))
 smallLargeSites			<- unique(studySite$smallLargeSite)
 
-behaviorAll				<- merge(behaviorAll, studySite[, c(29, 30)], by.x = 'articleIDssID', by.y = 'articleIDssID', all.x = TRUE)
+behaviorAll				<- merge(behaviorAll, studySite[, c(29, 30, 26:28)], by.x = 'articleIDssID', by.y = 'articleIDssID', all.x = TRUE)
 factor(factor(behaviorAll$Article.ID):factor(behaviorAll$Study.Site.ID))
 
-namesBySpeciesSite	<- aggregate(behaviorAll$Names.of.group, by = list(site = behaviorAll$smallLargeSite, species = behaviorAll$Lumper_Taxonomy, names = behaviorAll$Names.of.group), FUN = length)
+namesBySpeciesSite	<- aggregate(behaviorAll$Names.of.group, by = list(country = behaviorAll$Country, site = behaviorAll$smallLargeSite, 
+					smallSite = behaviorAll$Location.of.small.site, 
+					largeSite = behaviorAll$Location.of.large.site, species = behaviorAll$Lumper_Taxonomy, names = behaviorAll$Names.of.group), FUN = length)
 
-namesBySpeciesSite	<- namesBySpeciesSite[order(namesBySpeciesSite$site, namesBySpeciesSite$species, namesBySpeciesSite$names),]
+namesBySpeciesSite	<- namesBySpeciesSite[order(namesBySpeciesSite$country, namesBySpeciesSite$site, namesBySpeciesSite$species, namesBySpeciesSite$names),]
 write.csv(namesBySpeciesSite, 'namesBySpeciesSite.csv', row.names = FALSE)
 
 ###########################
