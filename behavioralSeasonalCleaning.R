@@ -5,7 +5,7 @@
 ################################################################
 
 #Meredith's working directory
-setwd('G:/My Drive/Graduate School/Research/Projects/SocialityConservationAnalyses/Data')
+setwd('C:/Users/mclutz/Box/GoogleDriveBackup/Graduate School/Research/Projects/SocialityConservationAnalyses/Data')
 
 #Read in all of the behavioral data & combine together
 behavior001_500	<- read.csv('Article Coding Database (IDs_ 001 - 500) - Behavior data.csv', stringsAsFactors = FALSE)
@@ -442,7 +442,7 @@ behaviorAllFeedingCols	<- seasonalFeedingAllNoBlanks[, c('X..plant.reproductive.
 seasonalFeedingAllNoBlanks$SumDiet <- apply(behaviorAllFeedingCols, 1, sum, na.rm = TRUE)
 
 #this checks to see if any of the summed diets are over 100 percent. 
-seasonalFeedingAllNoBlanks[seasonalFeedingAllNoBlanks$SumDiet > 100 & is.na(seasonalFeedingAllNoBlanks$SumDiet) == FALSE, c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'SumDiet')]
+seasonalFeedingAllNoBlanks[seasonalFeedingAllNoBlanks$SumDiet > 105 & is.na(seasonalFeedingAllNoBlanks$SumDiet) == FALSE, c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'SumDiet')]
 
 #checks to see if the sum is less than 1 (as it would be if they were entered as propotion instead of %
 seasonalFeedingAllNoBlanks[seasonalFeedingAllNoBlanks$SumDiet < 1 & seasonalFeedingAllNoBlanks$SumDiet > 0 & is.na(seasonalFeedingAllNoBlanks$SumDiet) == FALSE, c('Article.Initials', 'Article.ID', 'Study.Site.ID', 'SumDiet')] 
